@@ -9,10 +9,8 @@
 </head>
 <body>
     <main>
-
-
         <h2>Pedido</h2>
-        <form action="">
+        <form action="<?= base_url()?>Detalhes_Pedido" method="post">
             <div id="etapa1" class="etapa">
                 <h3>Adicionar Produto</h3>
                 <div class="div">
@@ -82,23 +80,20 @@
                 <h2>Forma de Pagamento</h2>
                 <div class="div">
                     <section class="filtros">
-                        <label for="">Forma de Pagamento</label>
+                        <label for="forma-pagamento">Forma de Pagamento</label>
                         <select name="forma-pagamento" id="forma-pagamento">
                             <option value="">Selecione</option>
-                            <option value="2">Pix</option>
                         </select>
                         
-                        <label for="">Instituição</label>
-                        <select name="instituição" id="instituição">
-                            <option value="">Selecione</option>
-                            <option value="3">Mastercard</option>
+                        <label for="instituicao">Instituição</label>
+                        <select name="instituicao" id="instituicao" >
+                            <option value="">Aguardando forma de pagamento...</option>
                         </select>
 
                         <div class="info-valor">
                             <label for="a-receber">À receber</label>
                             <div class="horizontal">
                                 <p id="a-receber">R$ 00,00</p>
-                            <!--<input type="text" name="a-receber" placeholder="9.000,00" disabled>-->
                             </div>
                         </div>
 
@@ -116,53 +111,46 @@
                             <label for="valor-total">Valor Total</label>
                             <div class="horizontal">
                                 <p id="valor-total">R$00,00</p>
-                            <input type="text" name="valor-total" placeholder="9.000,00" disabled>
                             </div>
                         </div>
                     </section>
 
-                    </div>
-                    <table>
-                        <colgroup>
-                        <col style="width: 15;"> <col style="width: 15;"> <col style="width: 8;"> <col style="width: 15%;"> <col style="width: 10%;"> <col style="width: 15%;"> <col style="width: 15%;"> </colgroup> <col style="width: 7;">
-                        <tr class="head">
-                            <th>Forma de Pagamento</th>
+                </div>
+                    <div id="pagamento-adicionado" class="pagamento-adicionado">
+                    <table class="table table-striped" id="tabela-pagamentos-adicionados">
+                        <thead style="display: none;">
+                        <tr>
+                            <th>Forma Pagamento</th>
                             <th>Instituição</th>
-                            <th>Parcelas</th>
-                            <th>Juros (% a.m)</th>
-                            <th>Valor à Vista  </th>
-                            <th>Valor Parcela c/ Juros</th>
-                            <th>Valor Total c/ Juros</th>
-                            <th></th>
+                            <th>Qtd. Parcelas</th>
+                            <th>Valor Parcela</th>
+                            <th>Total</th>
+                            <th>Ação</th>
                         </tr>
-                        <tbody>
-                            <tr class="line">
-                                <td>Cartão de Crédito</td>
-                                <td>Visa</td>
-                                <td>4x</td>
-                                <td>1,99%</td>
-                                <td>R$ 8.000,00</td>
-                                <td>R$ 2.072,50	</td>
-                                <td>R$ 8.290,00</td>
-                                <td>Excluir</td>
-                            </tr>
-                        </tbody>
+                        </thead>
+                    <tbody></tbody>
                     </table>
+                </div>
                 </div> 
             </div> <!--Fim da Etapa 2-->
             <div id="etapa3" class="etapa">
-                <select name="clientes" id="">
-                    <option value="0">Selecione</option>
-                    <option value="1">Cliente 1</option>
-                    <option value="1">Cliente 2</option>
-                    <option value="1">Cliente 3</option>
-                </select>
-                <section><button type="submit">Gravar</button></section>
+                
+            <select name="clientes" id="lista_cliente" data-url="<?php echo base_url('pedido/get_cliente'); ?>">
+                <option value="0">Selecione</option>
+            </select>
+            <span id="hidden_container"></span>
+                
+                
+                <section><button id="grava-pedido" type="submit">Gravar</button></section>
             </div> <!--Fim da Etapa 3-->
         </form>
     </main>
     <script> var base_url = "<?= base_url(); ?>"; </script>
     <script src="<?= base_url('assets/js/listar-produto.js') ?>"></script>
     <script src="<?= base_url('assets/js/adicionar-produto.js') ?>"></script>
+    <script src="<?= base_url('assets/js/select-instituicao.js') ?>"></script>
+    <script src="<?= base_url('assets/js/select-cliente.js') ?>"></script>
+    <script src="<?php echo base_url('assets/js/validacao-pedido.js'); ?>"></script>
 </body>
 </html>
+
