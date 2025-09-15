@@ -15,30 +15,7 @@
                 <h3>Adicionar Produto</h3>
                 <div class="div">
                     <section class="filtros"><button type="button" id="buscar-produto">Buscar Produtos</button></section>
-                    <table>
-                    <colgroup>
-                    <col style="width: 8%;"> <col style="width: 28%;"> <col style="width: 20%;"> <col style="width: 15%;"> <col style="width: 10%;"> <col style="width: 10%;"> <col style="width: 9%;"> </colgroup>
-                    <tr class="head">
-                        <th>Cód.</th>
-                        <th>Descrição</th>
-                        <th>Fornecedor</th>
-                        <th>Modelo</th>
-                        <th>Grupo</th>
-                        <th>Medida</th>
-                        <th>Valor</th>
-                    </tr>
-                    <tbody id="listar-produto">                    
-                    <tr class="produto adicionarProduto">
-                        <td>0986591</td>
-                        <td>Sofá Atenas - Molas ensacadas - 2 Mod. 100 cm teste3</td>
-                        <td>ALCOBA INDUSTRIA COMERCIO DE MOVEIS</td>
-                        <td>ML.ENS - Linha B</td>
-                        <td>ESTOFADOS</td>
-                        <td>123X123X123</td>
-                        <td>R$ 9.363,00</td>
-                    </tr>
-                    </tbody>
-                    </table>
+                    <table id="listar-produto"></table>
                 </div>
                 <h2>Produtos Adicionados</h2>
                 <div class="div teste">
@@ -55,18 +32,7 @@
                             <th>R$ Total</th>
                             <th>Remover</th>
                         </tr>
-                        <tbody id="lista-produto-adicionado">
-                            
-                            <tr>
-                                <td>0001</td>
-                                <td><p>Sofá</p></td>
-                                <td><input type="number" value="300" min="1"></td>
-                                <td>120 X 50 X 3</td>
-                                <td class="estoque com-estoque"> <p class="val-unitario">R$ 400,00</p><input type="text" value="236" disabled></td>
-                                <td>44.000,00</td>
-                                <td><button class="excluir"><img src="<?php echo base_url('assets/icons/excluir.svg'); ?>" alt="Seta"></button></td>
-                            </tr>
-                        </tbody>
+                        <tbody id="lista-produto-adicionado"></tbody>
                     </table>
                     <section class="total">
                         <div class="total-geral">

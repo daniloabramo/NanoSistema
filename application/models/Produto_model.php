@@ -26,6 +26,13 @@ class Produto_model extends CI_Model{
         $this->db->where_in('produto.id', $ids);
         return $this->db->get('produto')->result_array();
     }
+
+    public function get_produto_pedido_item()
+    {
+        $this->db->select('produto.id AS produto_id, produto.descricao AS produto_nome, produto.codigo, produto.altura, produto.largura, produto.profundidade');
+    }
+
+    
 }
 
 
