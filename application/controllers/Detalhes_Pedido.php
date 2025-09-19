@@ -11,4 +11,16 @@ class Detalhes_Pedido extends CI_Controller {
         echo json_encode($Detalhes_Pedido, JSON_PRETTY_PRINT);
         echo '</pre>';
     }
+
+    public function inserir_pedido()
+    {
+        echo "<pre>";
+        print_r($this->input->post());
+        echo "</pre>";
+    
+        $dados = $this->input->post();
+        $this->load->model('Detalhes_Pedido_model');
+        $this->Detalhes_Pedido_model->inserir_pedido($dados);
+    }
 }
+

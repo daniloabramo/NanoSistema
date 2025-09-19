@@ -10,7 +10,7 @@
 <body>
     <main>
         <h2>Pedido</h2>
-        <form action="<?= base_url()?>Detalhes_Pedido" method="post">
+        <form action="<?= base_url()?>Detalhes_Pedido/inserir_pedido" method="post">
             <div id="etapa1" class="etapa">
                 <h3>Adicionar Produto</h3>
                 <div class="div">
@@ -76,7 +76,7 @@
                             <div class="info-valor">
                             <label for="valor-total">Valor Total</label>
                             <div class="horizontal">
-                                <p id="valor-total">R$00,00</p>
+                                <p id="valor-total" name="valor-total">R$00,00</p>
                             </div>
                         </div>
                     </section>
@@ -101,7 +101,7 @@
             </div> <!--Fim da Etapa 2-->
             <div id="etapa3" class="etapa">
                 
-            <select name="clientes" id="lista_cliente" data-url="<?php echo base_url('pedido/get_cliente'); ?>">
+            <select id="lista_cliente" data-url="<?php echo base_url('pedido/get_cliente'); ?>">
                 <option value="0">Selecione</option>
             </select>
             <span id="hidden_container"></span>

@@ -20,7 +20,6 @@ class Detalhes_Pedido_model extends CI_Model{
         #$this->db->select('pedido');
     }
 
-    // Aqui precisa alterar o nome para get_detalhes_pedido($id)
     public function get_detalhes_pedido()
     {   
         $this->baseQuery();
@@ -38,9 +37,85 @@ class Detalhes_Pedido_model extends CI_Model{
         $this->db->select('pedido.*, cliente.nome_completo, cliente.cpf, pedido_status.descricao AS status_descricao');
         $this->db->select("DATE_FORMAT(pedido.data_cadastro, '%d/%m/%Y %H:%i:%s') AS data_cadastro");
         $this->db->join('cliente', 'pedido.cliente_id = cliente.id');
-        $this->db->join('pedido_status', 'pedido.pedido_status_id = pedido_status.id');
+        $this->db->join('pedido_status', 'pedido.pedido_status_id = pedido_status.id', 'left');
         return $this->db->get('pedido')->result_array();
     }
 
+    public function inserir_pedido($dados)
+    {
+        $pedido = [
+            'pedido_status_id' => 1,
+            'empresa_id'       => 1,
+            'cliente_id'       => $dados['cliente_id'],
+        ];
 
+        $this->db->insert('pedido', $pedido);
+        $pedido_id = $this->db->insert_id();
+
+        if (!empty($dados['produtos'])) {
+            $this->inserir_item_pedido($dados['produtos'], $pedido_id);
+        }
+
+        if (!empty($dados['instituicao']) && count($dados['instituicao']) === count($dados['total_parcela'])) {
+            $this->inserir_pagamento_pedido($dados, $pedido_id);
+        }
+    }
+
+    private function inserir_item_pedido($produtos, $pedido_id)
+    {
+        $produto_ids = array_column($produtos, 'id');
+
+        $this->db->select('id, custo_unitario');
+        $this->db->where_in('id', $produto_ids);
+        $produtos_do_banco = $this->db->get('produto')->result_array();
+
+        $mapa_de_precos = array_column($produtos_do_banco, 'custo_unitario', 'id');
+
+        $item_inserir = [];
+        $valor_total = 0.0;
+
+        $this->load->model('Produto_model');
+
+        foreach ($produtos as $p) {
+            $produto_id = $p['id'];
+            $quantidade = $p['quantidade'];
+
+            if (isset($mapa_de_precos[$produto_id])) {
+                try {
+                    $this->Produto_model->subtrair_estoque($produto_id, $quantidade);
+                } catch (Exception $e) {
+                    log_message('error', $e->getMessage());
+                    throw $e;
+                }
+
+                $item_inserir[] = [
+                    'pedido_id'      => $pedido_id,
+                    'produto_id'     => $produto_id,
+                    'quantidade'     => $quantidade,
+                    'custo_unitario' => $mapa_de_precos[$produto_id]
+                ];
+                $valor_total += $mapa_de_precos[$produto_id] * $quantidade;
+            }
+        }
+
+        if (!empty($item_inserir)) {
+            $this->db->insert_batch('pedido_item', $item_inserir);
+        }
+
+        $this->db->where('id', $pedido_id);
+        $this->db->update('pedido', ['valor_total' => $valor_total]);
+    }
+
+    private function inserir_pagamento_pedido($dados, $pedido_id)
+    {
+        $pagamento_inserir = [];
+        foreach ($dados['instituicao'] as $key => $instituicao_id) {
+            $pagamento_inserir[] = [
+                'pedido_id'      => $pedido_id,
+                'instituicao_id' => $instituicao_id,
+                'valor'          => $dados['total_parcela'][$key]
+            ];
+        }
+        $this->db->insert_batch('pedido_pagamento', $pagamento_inserir);
+    }
 }

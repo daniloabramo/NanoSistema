@@ -81,34 +81,39 @@ $(document).ready(function() {
             return;
         }
 
-        $.post(base_url + 'pedido/adicionar_pagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
-            if (response.success) {
-                const dados = response.data;
-                const novaLinha = `
-                    <tr data-valor="${dados.valor_total}">
-                        <td>${dados.descricao_pagamento}</td>
-                        <td>${dados.descricao}</td>
-                        <td>${dados.numero_parcelas}x</td>
-                        <td>${formatBRL(dados.valor_parcela)}</td>
-                        <td>${formatBRL(dados.valor_total)}</td>
-                        <td><button type="button" class="btn-excluir">Excluir</button></td>
-                    </tr>
-                `;
-                $('#tabela-pagamentos-adicionados tbody').append(novaLinha);
-                
-                const novoValorAReceber = valorAReceber - valorAdicionar;
-                $('#a-receber').text(formatBRL(novoValorAReceber));
+    $.post(base_url + 'pedido/adicionar_pagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
+        if (response.success) {
+            const dados = response.data;
+            const novaLinha = `
+                <tr data-valor="${dados.valor_total}">
+                    <td>${dados.descricao_pagamento}</td>
+                    <td>
+                        ${dados.descricao}
+                        <input type="hidden" name="instituicao[]" value="${instituicaoId}">
+                        <input type="hidden" name="total_parcela[]" value="${dados.valor_total}">
+                    </td>
+                    <td>${dados.numero_parcelas}x</td>
+                    <td>${formatBRL(dados.valor_parcela)}</td>
+                    <td>${formatBRL(dados.valor_total)}</td>
+                    <td><button type="button" class="btn-excluir">Excluir</button></td>
+                </tr>
+            `;
+            $('#tabela-pagamentos-adicionados tbody').append(novaLinha);
+    
+            const novoValorAReceber = valorAReceber - valorAdicionar;
+            $('#a-receber').text(formatBRL(novoValorAReceber));
 
-                $('#adicionar-valor').val('');
-                $('#instituicao').val('');
-                $('#forma-pagamento').val('').trigger('change');
-                
-                atualizarVisibilidadeHeader();
+            $('#adicionar-valor').val('');
+            $('#instituicao').val('');
+            $('#forma-pagamento').val('').trigger('change');
+    
+            atualizarVisibilidadeHeader();
 
-            } else {
-                alert('Erro: ' + response.message);
-            }
-        }, 'json');
+        } else {
+            alert('Erro: ' + response.message);
+        }
+    }, 'json');
+
     }
 
     $('.div .filtros .horizontal button').on('click', function() {

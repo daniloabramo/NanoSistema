@@ -19,8 +19,6 @@ class Controle extends CI_Controller {
         $this->load->model("Detalhes_Pedido_model");
         $data['pedido'] = $this->Detalhes_Pedido_model->listar();
         $this->load->view('/partials/lista_pedido', $data); 
-
-
     }
 
 }

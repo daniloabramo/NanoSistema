@@ -32,6 +32,21 @@ class Produto_model extends CI_Model{
         $this->db->select('produto.id AS produto_id, produto.descricao AS produto_nome, produto.codigo, produto.altura, produto.largura, produto.profundidade');
     }
 
+    public function subtrair_estoque($produto_id, $quantidade)
+    {
+        $this->db->set('estoque', 'estoque - ' . (int)$quantidade, FALSE);
+        $this->db->where('id', $produto_id);
+        $this->db->where('estoque >=', $quantidade);
+        $result = $this->db->update('produto');
+    
+        if ($this->db->affected_rows() === 0) {
+            throw new Exception('Estoque insuficiente para produto ID: ' . $produto_id);
+        }
+    
+        return $result;
+    }
+
+
     
 }
 

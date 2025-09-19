@@ -1,19 +1,38 @@
 <?php if (!empty($produto)): ?>
     <?php foreach($produto as $prod): ?>
         <tr data-id="<?= $prod['id'] ?>">
-            <td><?= $prod['codigo'] ?></td>
+            <td>
+                <?= $prod['codigo'] ?>
+                <!-- hidden inputs para o POST -->
+                <input type="hidden" name="produtos[<?= $prod['id'] ?>][id]" value="<?= $prod['id'] ?>">
+                <!-- se quiser enviar o preço (opcional), mas NÃO confie nele no servidor -->
+                <!-- <input type="hidden" name="produtos[<?= $prod['id'] ?>][preco_unitario]" value="<?= $prod['custo_unitario'] ?>"> -->
+            </td>
+
             <td><?= $prod['produto_nome'] ?></td>
+
             <td>
-                <input type="number" class="qtd" value="1" min="1" max="<?= $prod['estoque'] ?>">
+                <input type="number"
+                       class="qtd"
+                       name="produtos[<?= $prod['id'] ?>][quantidade]"
+                       value="1"
+                       min="1"
+                       max="<?= $prod['estoque'] ?>">
             </td>
+
             <td><?= $prod['largura'].' X '.$prod['profundidade'].' X '.$prod['altura'] ?></td>
-            <td
-                class="val-unitario"><?= 'R$ ' . number_format($prod['custo_unitario'], 2, ',', '.') ?>
-                <input type="text" value="<?= $prod['estoque'] ?>" disabled="">
+
+            <td class="val-unitario">
+                <?= 'R$ ' . number_format($prod['custo_unitario'], 2, ',', '.') ?>
+                <input type="text" value="<?= $prod['estoque'] ?>" disabled>
             </td>
+
             <td class="val-total"><?= 'R$ ' . number_format($prod['custo_unitario'], 2, ',', '.') ?></td>
+
             <td>
-                <button class="remover"><img src="<?php echo base_url('assets/icons/excluir.svg'); ?>" alt="Remover"></button>
+                <button class="remover" type="button">
+                    <img src="<?php echo base_url('assets/icons/excluir.svg'); ?>" alt="Remover">
+                </button>
             </td>
         </tr>
     <?php endforeach; ?>
