@@ -1,34 +1,69 @@
 <?php
 class Detalhes_Pedido_model extends CI_Model{
 
-    /*
-
-    public function baseQuery()
-    {
-        #$this->db->select('pedido, pedido_status, pedido_pagamento, pedido_item');
-        $this->db->from('pedido');
-        $this->db->select('pedido*, pedido_item*');
-        $this->db-join('pedido_item.pedido_id = pedido.id');
-        #$this->db-join('')
-        #$this->db-join('')
-        #$this->db-join('')
-    }*/
-
     public function baseQuery()
     {
         $this->db->from('pedido');
-        #$this->db->select('pedido');
     }
 
-    public function get_detalhes_pedido()
+    public function get_detalhes_pedido($id)
     {   
-        $this->baseQuery();
+        $pedido_base = $this->get_pedido_base($id);
+        $pedido_item = $this->get_pedido_item($id);
+        $pagamento = $this->get_pagamento($id);
+        
+        return [
+        'pedido_detalhes' => $pedido_base,
+        'pedido_item' => $pedido_item,
+        'pagamento' => $pagamento
+    ];
+}
 
+    private function get_pedido_base($id)
+    {
+        $this->baseQuery(); 
+        $this->db->where('pedido.id', $id);
+    
         $this->db->select('pedido.id AS pedido_id, pedido.data_cadastro AS pedido_data_cadastro');
-        $this->db->select('pedido_item.quantidade, pedido_item.preco_unitario, pedido_item.id AS pedido_item_id');
+        $this->db->select('cliente.nome_completo, cliente.cpf, cliente.rg, cliente.ie, cliente.email, cliente.celular');
+        $this->db->select('empresa.nome_fantasia, empresa.cnpj, empresa.celular, empresa.email');
+
+        $this->db->join('cliente', 'pedido.cliente_id = cliente.id');
+        $this->db->join('empresa', 'pedido.empresa_id = empresa.id');
+
+        return $this->db->get()->result_array();
+    }
+
+    private function get_pedido_item($id)
+    {
+        $this->db->reset_query();
+        $this->baseQuery(); 
+    
+        $this->db->where('pedido.id', $id);
+        $this->db->select('pedido_item.quantidade, pedido_item.custo_unitario, pedido_item.id AS pedido_item_id');
         $this->db->select('produto.id AS produto_id, produto.descricao AS produto_nome, produto.codigo, produto.altura, produto.largura, produto.profundidade');
+    
         $this->db->join('pedido_item', 'pedido_item.pedido_id = pedido.id');
         $this->db->join('produto', 'pedido_item.produto_id = produto.id');
+
+        return $this->db->get()->result_array();
+    }
+
+    private function get_pagamento($id)
+    {
+    
+        $this->db->reset_query();
+        $this->baseQuery(); 
+    
+        $this->db->where('pedido.id', $id);
+        $this->db->select('pedido_pagamento.data_cadastro AS pedido_pagamento_data_cadastro, pedido_pagamento.valor, pedido_pagamento.pedido_id, pedido_pagamento.instituicao_id');
+        $this->db->select('instituicao.numero_parcelas, instituicao.descricao AS instituicao_descricao');
+        $this->db->select('forma_pagamento.id AS forma_pagamento_id, forma_pagamento.descricao AS forma_pagamento_descricao');
+
+        $this->db->join('pedido_pagamento', 'pedido_pagamento.pedido_id = pedido.id');
+        $this->db->join('instituicao', 'pedido_pagamento.instituicao_id = instituicao.id');
+        $this->db->join('forma_pagamento', 'instituicao.forma_pagamento_id = forma_pagamento.id');
+
         return $this->db->get()->result_array();
     }
 

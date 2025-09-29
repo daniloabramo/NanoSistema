@@ -76,8 +76,9 @@ class Pedido extends CI_Controller {
         $this->load->model('Cliente_model');
         $cliente = $this->Cliente_model->getAll();
         echo json_encode($cliente);
-       
     }
+
+
 
 
 }

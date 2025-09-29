@@ -18,11 +18,11 @@
             <td><?= $ped['id'] ?></td>
             <td><?= $ped['cpf'] ?></td>
             <td><?= $ped['nome_completo'] ?></td>
-            <td><?= $ped['status_descricao'] ?></td>
+            <td id="<?= $ped['id'] ?>"> <?= $ped['status_descricao'] ?></td>
             <td><button>Imprimir</button></td>
-            <td><button>Cancelar</button></td>
-            <td><button>Finalizar</button></td>
-        </tr>
+            <td><button type="button" class="btn-cancelar" data-id="<?= $ped['id'] ?>" data-acao="cancelar">Cancelar</button></td>
+            <td><button type="button" class="btn-finalizar" data-id="<?= $ped['id'] ?>" data-acao="finalizar">Finalizar</button></td>
+            </tr>
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
@@ -30,3 +30,4 @@
     </tr>
 <?php endif; ?>
 </tbody>
+
