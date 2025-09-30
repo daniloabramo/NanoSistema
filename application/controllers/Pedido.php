@@ -6,6 +6,18 @@ class Pedido extends CI_Controller {
     public function index()
     {
         $this->load->view('pages/pedido'); 
+        $this->load->model('Pedido_model');
+    }
+
+    public function inserir_pedido()
+    {
+        echo "<pre>";
+        print_r($this->input->post());
+        echo "</pre>";
+    
+        $dados = $this->input->post();
+        $this->load->model('Pedido_model');
+        $this->Pedido_model->inserir_pedido($dados);
     }
 
     public function listar()
@@ -14,6 +26,8 @@ class Pedido extends CI_Controller {
         $data['produto'] = $this->Produto_model->getAll();
         $this->load->view('/partials/lista_produto', $data); 
     }
+
+    
     ////////////////////////////////////////
 
     public function adicionado()
@@ -76,6 +90,24 @@ class Pedido extends CI_Controller {
         $this->load->model('Cliente_model');
         $cliente = $this->Cliente_model->getAll();
         echo json_encode($cliente);
+    }
+
+    // Detalhes Pedido
+    public function Detalhes_Pedido($id_codificado){
+        $id = base64_decode(urldecode($id_codificado));
+        $this->load->model('Pedido_model');
+        $dados = $this->Pedido_model->get_detalhes_pedido($id);
+
+        $data['pedido'] = $dados['pedido_detalhes'][0];
+        $data['item']  = $dados['pedido_item'];
+        $data['pagamento'] = $dados['pagamento'];
+ 
+        
+        #echo '<pre>';
+        #echo json_encode($dados, JSON_PRETTY_PRINT);
+        #echo '</pre>';
+        $this->load->view('pages/impressao', $data);
+        $this->load->view('pages/contrato');
     }
 
 

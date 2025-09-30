@@ -3,7 +3,7 @@
 <tr class="head">
     <th>Data</th>
     <th>N° Pedido</th>
-    <th>CPF</th>
+    <th>CPF / IE</th>
     <th>Nome do Cliente</th>
     <th>Status</th>
     <th>Imprimir</th>
@@ -16,10 +16,10 @@
         <tr class="linha-pedido"> 
             <td><?= $ped['data_cadastro'] ?></td>
             <td><?= $ped['id'] ?></td>
-            <td><?= $ped['cpf'] ?></td>
+            <td><?= !empty($ped['cpf']) ? $ped['cpf'] : $ped['ie'] ?></td>
             <td><?= $ped['nome_completo'] ?></td>
             <td id="<?= $ped['id'] ?>"> <?= $ped['status_descricao'] ?></td>
-            <td><button>Imprimir</button></td>
+            <td><button type="button" onclick="window.location.href='<?php echo base_url('Pedido/Detalhes_Pedido/' . urlencode(base64_encode($ped['id']))); ?>'">Imprimir</button></td>
             <td><button type="button" class="btn-cancelar" data-id="<?= $ped['id'] ?>" data-acao="cancelar">Cancelar</button></td>
             <td><button type="button" class="btn-finalizar" data-id="<?= $ped['id'] ?>" data-acao="finalizar">Finalizar</button></td>
             </tr>

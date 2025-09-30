@@ -10,7 +10,7 @@
 <body>
     <main>
         <h2>Pedido</h2>
-        <form action="<?= base_url()?>Detalhes_Pedido/inserir_pedido" method="post">
+        <form action="<?= base_url()?>Pedido/inserir_pedido" method="post">
             <div id="etapa1" class="etapa">
                 <h3>Adicionar Produto</h3>
                 <div class="div">

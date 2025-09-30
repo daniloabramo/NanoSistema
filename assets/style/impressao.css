@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root{
+    --background:#FCFCFC;
+    --div:#FFFFFF;
+    --text: black;
+    --primary: rgb(33, 33, 33);
+    --secundary:#068E16;
+    --text-contrast: white;
+    --borda: #dbdbdb;
+    --btn: #428BCA;
+    --borda-btn: #226daf;
+}
+
+body{
+    margin: 0px;
+    display: flex;
+    justify-content: center;
+    font-family: 'Open Sans';
+    font-weight: 450;
+    font-size: 0.8rem;
+}
+
+main{
+    width: clamp(15rem, 55rem, 56rem);
+    margin: 0.5rem 0rem 1rem;
+    padding: 1rem;
+    border: 1px solid rgb(82, 82, 82);
+    border-radius: 0.5rem;
+    box-shadow: 0px 5px 13px 2px rgba(0, 0, 0, 0.1);
+}
+
+.horizontal{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+h4, h5, h6, p{
+    margin: 0px;
+    padding-bottom: 0.5rem;
+}
+
+h4{
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+}
+
+h5{
+    font-size: 1rem;
+    line-height: 1rem;
+}
+
+h6{
+    font-size: 0.9rem;
+    line-height: 0.9rem;
+}
+
+p{
+    font-size: 0.85rem;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td{
+    text-align: start;
+    border-bottom: 0.75px solid rgb(59, 59, 59);
+    font-weight: 450;
+}
+
+td.sem-borda{
+    border-bottom: none;
+}
+
+td.valor-total{
+    font-size: 0.88rem;
+    font-weight: 700;
+    border-bottom: none;
+}
+
+.imprimir{
+    position: fixed;
+    z-index: 1000;
+    bottom: 1rem;
+    right: 1rem;
+
+    button{
+        padding: 0.3rem;
+        border-radius: 0.8rem 0rem 0.8rem 0rem;
+        cursor: pointer;
+        background: var(--btn);
+        border: 2px solid var(--borda-btn);
+        color: var(--text-contrast);
+    }
+
+    button:hover{
+        background-color: var(--borda-btn);
+    }
+
+    img{
+        height: 1.5rem;
+    }
+}
+
+.dados-pedido{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+
+    .informacoes{
+
+        h4{
+            margin-bottom: 0.6rem;
+        }
+
+        h5{
+            margin-bottom: 0.8rem;
+        }
+    }
+
+    img{
+        max-width: 15rem;
+        max-height: 7rem;
+    }
+}
+
+.dados-cliente{
+    padding: 1rem 0rem 0.5rem 0rem;
+}
+
+.descricao-pedido{
+    padding: 1rem 0rem 1.5rem 0rem;
+}
+
+.metodo-de-pagamento-pedido{
+    padding: 1rem 0rem 1rem 0rem;
+    table{
+        margin-bottom: 0.3rem;
+    }
+    p{
+        display: flex;
+        justify-content: end;
+
+        padding-bottom: 0.2rem;
+        font-size: 0.88rem;
+        font-weight: 650;
+    }
+}
+
+.head th{
+    padding: 0.3rem 0rem;
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    text-align: start;
+    border-bottom: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.dados-empresa{
+    padding: 1rem 0rem 0.5rem 0rem;
+}
+
+.observacoes-pedido{
+    padding: 1rem 0rem 0.5rem 0rem;
+}
+
+.link{
+    padding: 1rem 0rem 0.5rem 0rem;
+    display: flex;
+    justify-content: end;
+    font-style: italic;
+
+    a{
+        font-weight: 500;
+    }
+
+    
+}
+
+.separacao{
+    border-bottom: 1.5px dashed black;
+}
+
+
+
+
