@@ -9,9 +9,12 @@ class Produto_model extends CI_Model{
         $this->db->join('grupo', 'grupo.id = produto.grupo_id');
     }
 
-    public function getAll()
+    public function listar($codigo = '')
     {
         $this->baseQuery();
+
+        $this->db = filtro_codigo($this->db, 'produto.codigo', $codigo);
+
         $this->db->order_by('produto.codigo', 'DESC');
         return $this->db->get('produto')->result_array();
     }

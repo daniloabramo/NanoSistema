@@ -13,10 +13,16 @@
         <form action="<?= base_url()?>Pedido/inserir_pedido" method="post">
             <div id="etapa1" class="etapa">
                 <h3>Adicionar Produto</h3>
-                <div class="div">
-                    <section class="filtros"><button type="button" id="buscar-produto">Buscar Produtos</button></section>
-                    <table id="listar-produto"></table>
-                </div>
+
+                <!--............................................-->
+                <!--............................................-->
+    <section class="filtros">
+        <input type="text" id="codigo-produto" placeholder="Digite o código" class="form-control" style="width: 50; display: inline-block; margin-right: 10px;">
+        <button type="button" id="buscar-produto">Buscar Produtos</button>
+    </section>
+    <table id="listar-produto"></table>
+
+
                 <h2>Produtos Adicionados</h2>
                 <div class="div teste">
                     <p id="aguardando-produto">Nenhum produto adicionado!</p>

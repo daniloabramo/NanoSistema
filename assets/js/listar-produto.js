@@ -1,7 +1,10 @@
 $(document).ready(function() {
     $("#buscar-produto").on("click", function() {
-        $.get(base_url + "pedido/listar", function(data) {
+        var codigo = $("#codigo-produto").val();
+        
+        $.get(base_url + "pedido/listar", { codigo: codigo }, function(data) {
             $("#listar-produto").html(data);
         });
+
     });
 });

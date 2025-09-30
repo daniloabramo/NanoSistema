@@ -23,7 +23,9 @@ class Pedido extends CI_Controller {
     public function listar()
     {
         $this->load->model("Produto_model");
-        $data['produto'] = $this->Produto_model->getAll();
+
+        $codigo = $this->input->get('codigo');
+        $data['produto'] = $this->Produto_model->listar($codigo);
         $this->load->view('/partials/lista_produto', $data); 
     }
 
