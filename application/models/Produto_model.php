@@ -9,14 +9,23 @@ class Produto_model extends CI_Model{
         $this->db->join('grupo', 'grupo.id = produto.grupo_id');
     }
 
-    public function listar($codigo = '')
+    public function listar($filtro = array())
     {
         $this->baseQuery();
 
-        $this->db = filtro_codigo($this->db, 'produto.codigo', $codigo);
+        $this->db = filtro($this->db, 'produto.codigo', $filtro['codigo'] ?? '', 'LIKE');
+        $this->db = filtro($this->db, 'produto.descricao', $filtro['nome_produto'] ?? '', 'LIKE');
+        $this->db = filtro($this->db, 'fornecedor.descricao', $filtro['nome_fornecedor'] ?? '', 'LIKE');
 
         $this->db->order_by('produto.codigo', 'DESC');
         return $this->db->get('produto')->result_array();
+    }
+
+    public function get_fornecedor()
+    {
+        $this->db->select('produto.fornecedor_id, fornecedor.descricao AS fornecedor_nome');
+        $this->db->join('fornecedor', 'fornecedor.id = produto.fornecedor_id');
+        return $this->db->get('fornecedor')->result_array();
     }
 
     public function getByIds($ids = [])

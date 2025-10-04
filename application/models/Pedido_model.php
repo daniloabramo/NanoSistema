@@ -86,12 +86,39 @@ class Pedido_model extends CI_Model{
     }
 
     // Listar Pedidos -----------------------------------------
-        public function listar()
+    public function listar($filtro = array())
     {   
+        $data_inicio = $filtro['data_inicio'] ?? null;
+        $data_fim = $filtro['data_fim'] ?? null;
+    
+        if (!empty($data_inicio) && empty($data_fim)) {
+            $data_inicio .= ' 00:01:00';
+            $data_fim = date('Y-m-d') . ' 23:59:59';
+
+        } elseif (empty($data_inicio) && !empty($data_fim)) {
+            $data_inicio = (new DateTime())->modify('-3 months')->format('Y-m-d') . ' 00:01:00';
+            $data_fim .= ' 23:59:59';
+
+        } elseif (empty($data_inicio) || empty($data_fim)) {
+            $data_fim = date('Y-m-d') . ' 23:59:59';
+            $data_inicio = (new DateTime())->modify('-3 months')->format('Y-m-d') . ' 00:01:00';
+
+        } else {
+            $data_inicio .= ' 00:01:00';
+            $data_fim .= ' 23:59:59';
+        }
+    
+        $filtro['periodo'] = array($data_inicio, $data_fim);
+
+        $this->db = filtro($this->db, 'pedido.id', $filtro['id'] ?? '' );
+        $this->db = filtro($this->db, 'pedido_status.descricao', $filtro['status'] ?? '', 'LIKE');
+        $this->db = filtro($this->db, 'pedido.data_cadastro', $filtro['periodo'] ?? '', 'BETWEEN');
+
         $this->db->select('pedido.*, cliente.nome_completo, cliente.cpf, cliente.ie, pedido_status.descricao AS status_descricao');
         $this->db->select("DATE_FORMAT(pedido.data_cadastro, '%d/%m/%Y %H:%i:%s') AS data_cadastro");
         $this->db->join('cliente', 'pedido.cliente_id = cliente.id');
         $this->db->join('pedido_status', 'pedido.pedido_status_id = pedido_status.id', 'left');
+
         $this->db->order_by('pedido.id', 'DESC');
         return $this->db->get('pedido')->result_array();
     }
@@ -158,66 +185,33 @@ class Pedido_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
-    // REFATORAR PARA PRIVATE A AÇÃO DE CANCELAR E FINALIZAR
     // Atualizar status do pedido ----------------------------
     public function update_status($id, $acao)
     {
-        $em_andamento = 1;
-        $finalizado = 2;
-        $cancelado = 3;
-        $reembolsado = 4;
+        $status_map = [
+            'em_andamento' => 1,
+            'finalizado'   => 2,
+            'cancelado'    => 3,
+            'reembolsado'  => 4,
+        ];
 
         $pedido = $this->db->select('pedido_status_id')
-                            ->where('id', $id)
-                            ->get('pedido')
-                            ->row();
+            ->where('id', $id)
+            ->get('pedido')
+            ->row();
 
-        if (!$pedido) 
-        {
+        if (!$pedido) {
             return false;
         }
 
         $status_atual = $pedido->pedido_status_id;
-        $novo_status = null; 
+        $novo_status = null;
         $mensagem = '';
-        
-        if ($acao === "finalizar"){
-            if ($status_atual == $em_andamento){
-                $novo_status = $finalizado;
-                $mensagem = 'Pedido Finalizado com Sucesso.';
-            }
-            else if ($status_atual == $finalizado){
-                $mensagem = 'Pedido Já Finalizado';
-            }
 
-            else if ($status_atual == $cancelado){
-                $mensagem = 'Reative o pedido para dar seguimento nele';
-            }
-
-            else if ($status_atual == $reembolsado){
-                $mensagem = ' Pedido já reembolsado';
-            }
-        }
-
-        if ($acao === "cancelar"){
-            if ($status_atual == $em_andamento){
-                $novo_status = $cancelado;
-                $mensagem = 'Pedido Cancelado com Sucesso.';
-            }
-            
-            else if ($status_atual == $finalizado){
-                $novo_status = $reembolsado;
-                $mensagem = 'Pedido Reembolsado';
-            }
-
-            else if ($status_atual == $cancelado){
-                $novo_status = $em_andamento;
-                $mensagem = 'Pedido Reativado';
-            }
-            
-            else if ($status_atual == $reembolsado){
-                $mensagem = 'Não é possível cancelar o reembolso';
-            }                    
+        if ($acao === "finalizar") {
+            list($novo_status, $mensagem) = $this->finalizar_pedido($status_atual, $status_map);
+        } elseif ($acao === "cancelar") {
+            list($novo_status, $mensagem) = $this->cancelar_pedido($status_atual, $status_map);
         }
 
         if ($novo_status !== null) {
@@ -225,5 +219,42 @@ class Pedido_model extends CI_Model{
             $this->db->update('pedido', ['pedido_status_id' => $novo_status]);
             return $this->db->affected_rows() > 0 || $this->db->trans_status() !== FALSE;
         }
+
+        return $mensagem;
     }
+
+    private function finalizar_pedido($status_atual, $status_map)
+    {
+        if ($status_atual == $status_map['em_andamento']) {
+            return [$status_map['finalizado'], 'Pedido Finalizado com Sucesso.'];
+        }
+        if ($status_atual == $status_map['finalizado']) {
+            return [null, 'Pedido Já Finalizado'];
+        }
+        if ($status_atual == $status_map['cancelado']) {
+            return [null, 'Reative o pedido para dar seguimento nele'];
+        }
+        if ($status_atual == $status_map['reembolsado']) {
+            return [null, 'Pedido já reembolsado'];
+        }
+        return [null, 'Status inválido para finalização'];
+    }
+
+    private function cancelar_pedido($status_atual, $status_map)
+    {
+        if ($status_atual == $status_map['em_andamento']) {
+            return [$status_map['cancelado'], 'Pedido Cancelado com Sucesso.'];
+        }
+        if ($status_atual == $status_map['finalizado']) {
+            return [$status_map['reembolsado'], 'Pedido Reembolsado'];
+        }
+        if ($status_atual == $status_map['cancelado']) {
+            return [$status_map['em_andamento'], 'Pedido Reativado'];
+        }
+        if ($status_atual == $status_map['reembolsado']) {
+            return [null, 'Não é possível cancelar o reembolso'];
+        }
+        return [null, 'Status inválido para cancelamento'];
+    }
+
 }

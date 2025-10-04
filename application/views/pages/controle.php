@@ -12,7 +12,20 @@
     <h2>Controle de Pedidos</h2>
     <main>
         <div class="div">
-            <section class="filtros"><button type="button" id="buscar-pedido">Buscar Pedido</button></section>
+            <section class="filtros">
+            <select id="descricao-status" name="status" class="form-control">
+                <?php echo $select_status; ?>
+            </select>
+
+            <input type="text" id="id-pedido" placeholder="Digite o código" class="form-control" style="width: 30; display: inline-block; margin-right: 10px;">
+
+            <label for="data-inicio">Data Início:</label>
+            <input type="date" id="data-inicio">
+
+            <label for="data-fim">Data Fim:</label>
+            <input type="date" id="data-fim">
+
+            <button type="button" id="buscar-pedido">Buscar Pedido</button></section>
             <table id="listar-pedido">
             </table>
         </div>

@@ -16,11 +16,31 @@
 
                 <!--............................................-->
                 <!--............................................-->
-    <section class="filtros">
-        <input type="text" id="codigo-produto" placeholder="Digite o código" class="form-control" style="width: 50; display: inline-block; margin-right: 10px;">
-        <button type="button" id="buscar-produto">Buscar Produtos</button>
-    </section>
-    <table id="listar-produto"></table>
+        <section class="filtros">
+            <input type="text" id="codigo-produto" placeholder="Digite o código" class="form-control" style="width: 30; display: inline-block; margin-right: 10px;">
+            <input type="text" id="descricao-produto" placeholder="Digite a descrição" class="form-control" style="width: 50; display: inline-block; margin-right: 10px;">
+            <select id="descricao-fornecedor" name="produto" class="form-control">
+                <?php echo $select_fornecedor; ?>
+            </select>
+            <!--............................................-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--............................................-->
+
+            <button type="button" id="buscar-produto">Buscar Produtos</button>
+        </section>
+        <table id="listar-produto"></table>
 
 
                 <h2>Produtos Adicionados</h2>

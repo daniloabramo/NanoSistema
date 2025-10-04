@@ -5,9 +5,22 @@ class Pedido extends CI_Controller {
 	
     public function index()
     {
-        $this->load->view('pages/pedido'); 
         $this->load->model('Pedido_model');
+        $this->load->model('Produto_model');
+        $this->load->helper('select');
+
+
+        $data['produto'] = $this->db->get('produto')->result_array();
+
+        // View Parcial:
+        $data['select_fornecedor'] = select_opcoes($this, 'fornecedor', 'descricao', 'descricao', 'Selecione fornecedor');
+        $data['select_modelo'] = select_opcoes($this, 'produto', 'modelo', 'modelo', 'Selecione modelo');
+        $data['select_grupo'] = select_opcoes($this, 'produto', 'grupo', 'grupo', 'Selecione grupo');
+        $this->load->view('pages/pedido', $data);
+        
     }
+
+
 
     public function inserir_pedido()
     {
@@ -22,10 +35,17 @@ class Pedido extends CI_Controller {
 
     public function listar()
     {
-        $this->load->model("Produto_model");
+        $this->load->model('Produto_model');
 
-        $codigo = $this->input->get('codigo');
-        $data['produto'] = $this->Produto_model->listar($codigo);
+        $filtro = array(
+            'codigo' => $this->input->get('codigo'),
+            'nome_produto' => $this->input->get('nome_produto'),
+            'nome_fornecedor' => $this->input->get('nome_fornecedor')
+        );
+
+        $filtro = array_filter($filtro);
+        $data['produto'] = $this->Produto_model->listar($filtro);
+
         $this->load->view('/partials/lista_produto', $data); 
     }
 

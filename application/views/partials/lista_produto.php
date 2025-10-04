@@ -13,7 +13,7 @@
 <?php if (!empty($produto)): ?>
     <?php foreach($produto as $prod): ?>
         <tr class="linha-produto"> 
-            <td><?= $prod['codigo'] ?></td>
+            <td><?= str_pad($prod['codigo'], 4, '0', STR_PAD_LEFT) ?></td>
             <td>
             <?= $prod['produto_nome'] ?>
             <input type="hidden" class="produto-id" value="<?= $prod['id'] ?>">

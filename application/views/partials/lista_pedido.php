@@ -26,7 +26,7 @@
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
-        <td colspan="7">Nenhum produto encontrado.</td>
+        <td colspan="7">Nenhum pedido encontrado.</td>
     </tr>
 <?php endif; ?>
 </tbody>

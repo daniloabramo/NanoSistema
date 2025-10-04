@@ -2,11 +2,9 @@
     <?php foreach($produto as $prod): ?>
         <tr data-id="<?= $prod['id'] ?>">
             <td>
-                <?= $prod['codigo'] ?>
-                <!-- hidden inputs para o POST -->
+                
+                <?= str_pad($prod['codigo'], 4, '0', STR_PAD_LEFT) ?>
                 <input type="hidden" name="produtos[<?= $prod['id'] ?>][id]" value="<?= $prod['id'] ?>">
-                <!-- se quiser enviar o preço (opcional), mas NÃO confie nele no servidor -->
-                <!-- <input type="hidden" name="produtos[<?= $prod['id'] ?>][preco_unitario]" value="<?= $prod['custo_unitario'] ?>"> -->
             </td>
 
             <td><?= $prod['produto_nome'] ?></td>
