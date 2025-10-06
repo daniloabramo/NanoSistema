@@ -1,3 +1,11 @@
+:root{
+    --div:#FFFFFF;
+    --borda: #dbdbdb;
+    --text: black;
+    --text-contrast: white;
+}
+
+/*------------------------------------*/
 #etapa1{
     background: rgb(238, 249, 255);
 }
@@ -12,4 +20,119 @@
 
 .teste{
     background: rgb(174, 174, 255);
+}
+
+/*------------------------------------*/
+
+.modal-sucesso{
+    background: #5CB85C;
+
+.modal-fechar{
+    color: #4A934A;
+    }
+
+.modal-fechar:hover{
+    color:  #185318;
+    }
+}
+
+.modal-info{
+    background: #5BC0DE;
+
+.modal-fechar{
+    color:  #1086A9;
+    }
+
+.modal-fechar:hover{
+    color: #0b3f4f;
+    }
+}
+
+.modal-erro{
+    background: #D9534F;
+
+.modal-fechar{
+    color: #9e2727;
+    }
+
+.modal-fechar:hover{
+    color: #4d1111;
+    }
+}
+
+    body {
+    font-family: Arial, sans-serif;
+    }
+
+.modal-fundo {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+}
+
+.modal-container {
+    position: relative;
+    background: var(--div);
+    border-radius: 0.8rem 0rem 0.8rem 0rem;
+    border: 2px solid #222;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.22);
+    max-width: 560px;
+    width: 96%;
+    overflow: hidden;
+    z-index: 1000; 
+}
+
+.modal-alerta {
+    display: flex;
+    align-items: center;
+    color: var(--text-contrast);
+    padding: 0rem 1.1rem;
+    font-size: 1.1rem;
+    position: relative;
+    font-weight: 500;
+    border-radius: 0.65rem 0rem 0.8rem 0rem;
+    }
+
+.modal-fechar {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 400;
+    cursor: pointer;
+    line-height: 1;
+    }
+
+.modal-interacao {
+    padding: 20px;
+    text-align: center;
+    }
+
+.modal-ok {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-family: inherit;
+    border-radius:0.8rem 0rem 0.8rem 0rem;
+    border: 2px solid var(--borda);
+    background: var(--div);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .2s;
+    }
+.modal-ok:focus, .modal-ok:hover {
+    background: rgb(243, 243, 243);
 }

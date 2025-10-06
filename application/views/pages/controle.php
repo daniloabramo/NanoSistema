@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/style/style.css'); ?>">
     <script src="https://code.jquery.com/jquery-1.10.2.min.js" integrity="sha256-C6CB9UYIS9UJeqinPHWTHVqh/E1uhG5Twh+Y5qFQmYg=" crossorigin="anonymous"></script>
-    <!--<link rel="stylesheet" href="/assets/style/style.css">-->
-
     <title>Controle de Pedidos</title>
 </head>
 <body>
@@ -30,9 +29,12 @@
             </table>
         </div>
     </main>
+    
     <script> var base_url = "<?= base_url(); ?>"; </script>
+    <script src="<?= base_url('assets/js/modal.js') ?>"></script>
     <script src="<?= base_url('assets/js/listar-pedido.js') ?>"></script>
     <script src="<?= base_url('assets/js/pedido-status-atualizar.js') ?>"></script>
+
     
 
     

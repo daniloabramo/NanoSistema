@@ -38,9 +38,9 @@ class Pedido extends CI_Controller {
         $this->load->model('Produto_model');
 
         $filtro = array(
-            'codigo' => $this->input->get('codigo'),
-            'nome_produto' => $this->input->get('nome_produto'),
-            'nome_fornecedor' => $this->input->get('nome_fornecedor')
+            'codigo' =>  sanitizar_input($this->input->get('codigo')),
+            'nome_produto' =>  sanitizar_input($this->input->get('nome_produto')),
+            'nome_fornecedor' =>  sanitizar_input($this->input->get('nome_fornecedor'))
         );
 
         $filtro = array_filter($filtro);
@@ -85,8 +85,8 @@ class Pedido extends CI_Controller {
 
     public function adicionar_pagamento()
     {
-        $instituicao_id = $this->input->post('instituicao_id');
-        $valor = $this->input->post('valor');
+        $instituicao_id =  sanitizar_input($this->input->post('instituicao_id'));
+        $valor =  sanitizar_input($this->input->post('valor'));
 
         if ($instituicao_id && is_numeric($valor) && $valor > 0) {
             $this->load->model('Instituicao_model');

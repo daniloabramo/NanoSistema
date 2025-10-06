@@ -201,7 +201,8 @@ class Pedido_model extends CI_Model{
             ->row();
 
         if (!$pedido) {
-            return false;
+            /*return false;*/
+            return ['status' => 'erro', 'msg' => 'Pedido não encontrado'];
         }
 
         $status_atual = $pedido->pedido_status_id;
@@ -209,52 +210,57 @@ class Pedido_model extends CI_Model{
         $mensagem = '';
 
         if ($acao === "finalizar") {
-            list($novo_status, $mensagem) = $this->finalizar_pedido($status_atual, $status_map);
+            list($novo_status, $mensagem, $status) = $this->finalizar_pedido($status_atual, $status_map);
         } elseif ($acao === "cancelar") {
-            list($novo_status, $mensagem) = $this->cancelar_pedido($status_atual, $status_map);
+            list($novo_status, $mensagem, $status) = $this->cancelar_pedido($status_atual, $status_map);
         }
 
         if ($novo_status !== null) {
             $this->db->where('id', $id);
             $this->db->update('pedido', ['pedido_status_id' => $novo_status]);
-            return $this->db->affected_rows() > 0 || $this->db->trans_status() !== FALSE;
+            
+            if ($this->db->affected_rows() > 0 || $this->db->trans_status() !== FALSE) {
+            return ['status' => 'sucesso', 'msg' => $mensagem];
+        } else {
+            return ['status' => 'erro', 'msg' => 'Erro ao atualizar o banco de dados'];
+        }
         }
 
-        return $mensagem;
+        return ['status' => $status ?? 'info', 'msg' => $mensagem];
     }
 
     private function finalizar_pedido($status_atual, $status_map)
     {
         if ($status_atual == $status_map['em_andamento']) {
-            return [$status_map['finalizado'], 'Pedido Finalizado com Sucesso.'];
+            return [$status_map['finalizado'], 'Pedido Finalizado com Sucesso.','sucesso'];
         }
         if ($status_atual == $status_map['finalizado']) {
-            return [null, 'Pedido Já Finalizado'];
+            return [null, 'Pedido Já Finalizado', 'erro'];
         }
         if ($status_atual == $status_map['cancelado']) {
-            return [null, 'Reative o pedido para dar seguimento nele'];
+            return [null, 'Reative o pedido para dar seguimento nele', 'info'];
         }
         if ($status_atual == $status_map['reembolsado']) {
-            return [null, 'Pedido já reembolsado'];
+            return [null, 'Pedido já Reembolsado', 'erro'];
         }
-        return [null, 'Status inválido para finalização'];
+        return [null, 'Status inválido para finalização','erro'];
     }
 
     private function cancelar_pedido($status_atual, $status_map)
     {
         if ($status_atual == $status_map['em_andamento']) {
-            return [$status_map['cancelado'], 'Pedido Cancelado com Sucesso.'];
+            return [$status_map['cancelado'], 'Pedido Cancelado com Sucesso.','sucesso'];
         }
         if ($status_atual == $status_map['finalizado']) {
-            return [$status_map['reembolsado'], 'Pedido Reembolsado'];
+            return [$status_map['reembolsado'], 'Pedido Reembolsado','sucesso'];
         }
         if ($status_atual == $status_map['cancelado']) {
-            return [$status_map['em_andamento'], 'Pedido Reativado'];
+            return [$status_map['em_andamento'], 'Pedido Reativado','sucesso'];
         }
         if ($status_atual == $status_map['reembolsado']) {
-            return [null, 'Não é possível cancelar o reembolso'];
+            return [null, 'Não é possível cancelar o reembolso','erro'];
         }
-        return [null, 'Status inválido para cancelamento'];
+        return [null, 'Status inválido para cancelamento','erro'];
     }
 
 }
