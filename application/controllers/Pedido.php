@@ -12,7 +12,7 @@ class Pedido extends CI_Controller {
 
         $data['produto'] = $this->db->get('produto')->result_array();
 
-        // View Parcial:
+        $data['menu'] = $this->load->view('partials/menu', NULL, TRUE);
         $data['select_fornecedor'] = select_opcoes($this, 'fornecedor', 'descricao', 'descricao', 'Selecione fornecedor');
         $data['select_modelo'] = select_opcoes($this, 'produto', 'modelo', 'modelo', 'Selecione modelo');
         $data['select_grupo'] = select_opcoes($this, 'produto', 'grupo', 'grupo', 'Selecione grupo');
@@ -23,14 +23,17 @@ class Pedido extends CI_Controller {
 
 
     public function inserir_pedido()
-    {
+    {   
+        /*
         echo "<pre>";
         print_r($this->input->post());
         echo "</pre>";
+        */
     
         $dados = $this->input->post();
         $this->load->model('Pedido_model');
         $this->Pedido_model->inserir_pedido($dados);
+        redirect('controle');
     }
 
     public function listar()

@@ -11,7 +11,6 @@
     <section class="dados-pedido separacao">
         <div class="informacoes">
             <h4>Obrigado Pela Preferência</h4>
-            <h5>Vendedor: Maria Lima</h5>
             <h6>Pedido: Nº <?= $pedido['pedido_id'] ?></h6>
         </div>
         <div class="logo"><img src="<?php echo base_url($pedido['logo']); ?>" alt="logo expresso"></div>
@@ -46,9 +45,9 @@
                 <td><?= str_pad($ped['codigo'], 4, '0', STR_PAD_LEFT) ?></td>
                 <td><?= $ped['produto_nome'] ?></td>
                 <td><?= $ped['largura'].' x '.$ped['altura'].' x '.$ped['profundidade'] ?></td>
-                <td><?= 'R$ ' . number_format($ped['custo_unitario'], 2, ',', '.') ?></td>
+                <td><?= 'R$ ' . number_format($ped['preco_unitario'], 2, ',', '.') ?></td>
                 <td><?= str_pad($ped['quantidade'], 2, '0', STR_PAD_LEFT) ?></td>
-                <td><?= 'R$ ' . number_format ($ped['quantidade'] * $ped['custo_unitario'], 2, ',', '.') ?></td>
+                <td><?= 'R$ ' . number_format ($ped['quantidade'] * $ped['preco_unitario'], 2, ',', '.') ?></td>
                 </tr>
                 <?php endforeach; ?>
             <?php endif; ?>

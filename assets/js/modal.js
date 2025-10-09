@@ -16,6 +16,15 @@
                 $(".modal-alerta").removeClass("modal-ok modal-info modal-erro").addClass("modal-" + res.status);
                 $("#modal").css("display", "flex");
 
+                if (res.status === "erro") {
+                    $(".modal-container")
+                        .removeClass("bounce-in")
+                        .addClass("shake")
+                        .one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+                        $(this).removeClass("shake");
+                    });
+                }   
+
                 if (res.status === "ok") {
                     $("#status-" + id).text(res.novo_status || acao);
                 }

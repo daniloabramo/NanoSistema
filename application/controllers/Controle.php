@@ -12,12 +12,10 @@ class Controle extends CI_Controller {
         echo json_encode($Detalhes_Pedido, JSON_PRETTY_PRINT);
         echo '</pre>';*/
 
-
-        $data['select_status'] = select_opcoes($this, 'pedido_status', 'descricao', 'descricao', 'Selecione status');
+        $data['menu'] = $this->load->view('partials/menu', NULL, TRUE);
+        $data['select_status'] = select_opcoes($this, 'pedido_status', 'descricao', 'descricao', 'Selecione');
         $this->load->view('pages/controle', $data);
         $this->load->view('partials/modal', $data);
-
-
     }
 
     public function listar()
@@ -26,13 +24,12 @@ class Controle extends CI_Controller {
 
         $filtro = array(
             'id' => sanitizar_input($this->input->get('id')),
+            'nome_completo' =>  sanitizar_input($this->input->get('nome_completo')),
             'status' => sanitizar_input($this->input->get('status')),
             'data_inicio' => sanitizar_input($this->input->get('data_inicio')),
             'data_fim' => sanitizar_input($this->input->get('data_fim'))
         );
         
-
-
         $data['pedido'] = $this->Pedido_model->listar($filtro);
         
         $this->load->view('/partials/lista_pedido', $data); 
@@ -59,12 +56,10 @@ class Controle extends CI_Controller {
             'status' => $resultado['status'],
             'msg' => $resultado['msg']
             ];
-        
         }
 
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($res));
         }
-
 }

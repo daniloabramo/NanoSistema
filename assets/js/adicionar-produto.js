@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $("#head-produto-adicionado").hide();
+    $(".total-geral").hide();
 
     $("#listar-produto").on("click", ".linha-produto", function() {
         let id = $(this).find(".produto-id").val();
@@ -17,8 +19,8 @@ $(document).ready(function() {
             }
         } else {
             $.post(base_url + "pedido/adicionado", { ids: [id] }, function(newRow) {
-                $("#aguardando-produto").hide();
                 $("#lista-produto-adicionado").append(newRow);
+                atualizarVisibilidadeCabecalho();
                 atualizarTotalGeral();
             });
         }
@@ -26,17 +28,21 @@ $(document).ready(function() {
 
     $("#lista-produto-adicionado").on("click", ".remover", function() {
         $(this).closest("tr").remove();
-        if ($('#lista-produto-adicionado tr').length === 0) {
-            $("#aguardando-produto").show();
-        }
+        atualizarVisibilidadeCabecalho();
         atualizarTotalGeral();
     });
 
     $('#lista-produto-adicionado').on('change input', '.qtd', function() {
         atualizarTotalGeral();
     });
-
 });
+
+function atualizarVisibilidadeCabecalho() {
+    let temProdutos = $('#lista-produto-adicionado tr').length > 0;
+    $("#head-produto-adicionado").toggle(temProdutos);
+    $("#aguardando-produto").toggle(!temProdutos);
+    $(".total-geral").toggle(temProdutos);
+}
 
 function atualizarTotalGeral() {
     let total = 0;
@@ -47,5 +53,8 @@ function atualizarTotalGeral() {
         total += quantidade * precoUnitario;
     });
     const totalFormatado = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    $('#total-geral, #a-receber,#valor-total').text(totalFormatado);
+    $('#total-geral').text(totalFormatado);
+
+    const totalSemSimbolo = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    $('#a-receber, #valor-total').text(totalSemSimbolo);
 }

@@ -1,5 +1,5 @@
 <colgroup>
-<col style="width: 10%;"> <col style="width:8%;"> <col style="width: 10%;"> <col style="width: 13%;"> <col style="width: 15%;"> <col style="width: 10%;"> <col style="width: 9%;"> <col style="width: 9%;"></colgroup>
+<col style="width: 12%;"> <col style="width:10%;"> <col style="width: 12%;"> <col style="width: 15%;"> <col style="width: 17%;"> <col style="width: 12%;"> <col style="width: 11%;"> <col style="width: 11%;"></colgroup>
 <tr class="head">
     <th>Data</th>
     <th>N° Pedido</th>
@@ -19,9 +19,15 @@
             <td><?= !empty($ped['cpf']) ? $ped['cpf'] : $ped['ie'] ?></td>
             <td><?= $ped['nome_completo'] ?></td>
             <td id="<?= $ped['id'] ?>"> <?= $ped['status_descricao'] ?></td>
-            <td><button type="button" onclick="window.location.href='<?php echo base_url('Pedido/Detalhes_Pedido/' . urlencode(base64_encode($ped['id']))); ?>'">Imprimir</button></td>
-            <td><button type="button" class="btn-cancelar" data-id="<?= $ped['id'] ?>" data-acao="cancelar">Cancelar</button></td>
-            <td><button type="button" class="btn-finalizar" data-id="<?= $ped['id'] ?>" data-acao="finalizar">Finalizar</button></td>
+            <td><button class="acao" name="imprimir" type="button" title="Imprimir" onclick="window.open('<?php echo base_url('Pedido/Detalhes_Pedido/' . urlencode(base64_encode($ped['id']))); ?>', '_blank')"><img src="<?php echo base_url('assets/icons/impressao.svg'); ?>" alt="Imprimir"></button></td>
+            <td><button type="button" name="cancelar" class="btn-cancelar acao" data-id="<?= $ped['id'] ?>" data-acao="cancelar">
+                    <?php if(strtolower($ped['status_descricao']) === 'cancelado'): ?>
+            <img src="<?= base_url('assets/icons/ativar.svg'); ?>" alt="Ativar">
+        <?php else: ?>
+            <img src="<?= base_url('assets/icons/cancelar.svg'); ?>" alt="Cancelar">
+        <?php endif; ?>
+            </button></td>
+            <td><button type="button" name="finalizar" title="Finalizar" class="btn-finalizar acao" data-id="<?= $ped['id'] ?>" data-acao="finalizar"><img src="<?php echo base_url('assets/icons/finalizar.svg'); ?>" alt="Finalizar"></button></button></td>
             </tr>
     <?php endforeach; ?>
 <?php else: ?>

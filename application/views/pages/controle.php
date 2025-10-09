@@ -8,27 +8,48 @@
     <title>Controle de Pedidos</title>
 </head>
 <body>
-    <h2>Controle de Pedidos</h2>
+    <?php echo $menu; ?>
     <main>
+        <h2>Controle de Pedidos</h2>
+        <h3>Filtro de Busca</h3>
         <div class="div">
             <section class="filtros">
-            <select id="descricao-status" name="status" class="form-control">
-                <?php echo $select_status; ?>
-            </select>
+            <div class="filtro">
+                <label for="id-pedido">Código:</label>
+                <input type="text" id="id-pedido" placeholder="9999" name="codigo" class="form-control" style="width: 4rem; display: inline-block; margin-right: 10px;">
+            </div>     
+            
+            <div class="filtro">
+                <label for="cliente">Cliente</label>
+                <input type="text" id="cliente" placeholder="Nome" name="nome" class="form-control" style="width: 4rem; display: inline-block; margin-right: 10px;">
+            </div>   
 
-            <input type="text" id="id-pedido" placeholder="Digite o código" class="form-control" style="width: 30; display: inline-block; margin-right: 10px;">
+            <div class="filtro">
+                <label for="descricao-status">Status:</label>
+                <select id="descricao-status" name="status" class="form-control">
+                    <?php echo $select_status; ?>
+                </select>
+            </div>
 
-            <label for="data-inicio">Data Início:</label>
-            <input type="date" id="data-inicio">
-
-            <label for="data-fim">Data Fim:</label>
-            <input type="date" id="data-fim">
-
-            <button type="button" id="buscar-pedido">Buscar Pedido</button></section>
-            <table id="listar-pedido">
-            </table>
+            <div class="filtro-data">
+                <div class="filtro">
+                    <label for="data-inicio">Data Início:</label>
+                    <input type="date" id="data-inicio" name="data">
+                </div>
+                <div class="filtro">
+                    <label for="data-fim">Data Fim:</label>
+                    <input type="date" id="data-fim" name="data">
+                </div>
+            </div>
+            </section>
         </div>
-    </main>
+        <button type="button" class="btn" id="buscar-pedido">Buscar Pedido</button>
+        <div class="filtro">
+            <section class="lista">
+                <table id="listar-pedido"></table>
+            </section>
+        </div>    
+    </main>   
     
     <script> var base_url = "<?= base_url(); ?>"; </script>
     <script src="<?= base_url('assets/js/modal.js') ?>"></script>

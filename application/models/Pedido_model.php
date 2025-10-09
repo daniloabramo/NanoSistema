@@ -31,11 +31,11 @@ class Pedido_model extends CI_Model{
     {
         $produto_ids = array_column($produtos, 'id');
 
-        $this->db->select('id, custo_unitario');
+        $this->db->select('id, preco_unitario');
         $this->db->where_in('id', $produto_ids);
         $produtos_do_banco = $this->db->get('produto')->result_array();
 
-        $mapa_de_precos = array_column($produtos_do_banco, 'custo_unitario', 'id');
+        $mapa_de_precos = array_column($produtos_do_banco, 'preco_unitario', 'id');
 
         $item_inserir = [];
         $valor_total = 0.0;
@@ -58,7 +58,7 @@ class Pedido_model extends CI_Model{
                     'pedido_id'      => $pedido_id,
                     'produto_id'     => $produto_id,
                     'quantidade'     => $quantidade,
-                    'custo_unitario' => $mapa_de_precos[$produto_id]
+                    'preco_unitario' => $mapa_de_precos[$produto_id]
                 ];
                 $valor_total += $mapa_de_precos[$produto_id] * $quantidade;
             }
@@ -111,6 +111,7 @@ class Pedido_model extends CI_Model{
         $filtro['periodo'] = array($data_inicio, $data_fim);
 
         $this->db = filtro($this->db, 'pedido.id', $filtro['id'] ?? '' );
+        $this->db = filtro($this->db, 'cliente.nome_completo', $filtro['nome_completo'] ?? '', 'LIKE');
         $this->db = filtro($this->db, 'pedido_status.descricao', $filtro['status'] ?? '', 'LIKE');
         $this->db = filtro($this->db, 'pedido.data_cadastro', $filtro['periodo'] ?? '', 'BETWEEN');
 
@@ -158,7 +159,7 @@ class Pedido_model extends CI_Model{
         $this->baseQuery(); 
     
         $this->db->where('pedido.id', $id);
-        $this->db->select('pedido_item.quantidade, pedido_item.custo_unitario, pedido_item.id AS pedido_item_id');
+        $this->db->select('pedido_item.quantidade, pedido_item.preco_unitario, pedido_item.id AS pedido_item_id');
         $this->db->select('produto.id AS produto_id, produto.descricao AS produto_nome, produto.codigo, produto.altura, produto.largura, produto.profundidade');
     
         $this->db->join('pedido_item', 'pedido_item.pedido_id = pedido.id');
@@ -189,10 +190,9 @@ class Pedido_model extends CI_Model{
     public function update_status($id, $acao)
     {
         $status_map = [
-            'em_andamento' => 1,
-            'finalizado'   => 2,
-            'cancelado'    => 3,
-            'reembolsado'  => 4,
+            'Em_Andamento' => 1,
+            'Finalizado'   => 2,
+            'Cancelado'    => 3,
         ];
 
         $pedido = $this->db->select('pedido_status_id')
@@ -201,7 +201,6 @@ class Pedido_model extends CI_Model{
             ->row();
 
         if (!$pedido) {
-            /*return false;*/
             return ['status' => 'erro', 'msg' => 'Pedido não encontrado'];
         }
 
@@ -231,34 +230,28 @@ class Pedido_model extends CI_Model{
 
     private function finalizar_pedido($status_atual, $status_map)
     {
-        if ($status_atual == $status_map['em_andamento']) {
-            return [$status_map['finalizado'], 'Pedido Finalizado com Sucesso.','sucesso'];
+        if ($status_atual == $status_map['Em_Andamento']) {
+            return [$status_map['Finalizado'], 'Pedido Finalizado com Sucesso.','sucesso'];
         }
-        if ($status_atual == $status_map['finalizado']) {
+        if ($status_atual == $status_map['Finalizado']) {
             return [null, 'Pedido Já Finalizado', 'erro'];
         }
-        if ($status_atual == $status_map['cancelado']) {
-            return [null, 'Reative o pedido para dar seguimento nele', 'info'];
-        }
-        if ($status_atual == $status_map['reembolsado']) {
-            return [null, 'Pedido já Reembolsado', 'erro'];
+        if ($status_atual == $status_map['Cancelado']) {
+            return [null, 'Reative o Pedido Para Dar Seguimento', 'info'];
         }
         return [null, 'Status inválido para finalização','erro'];
     }
 
     private function cancelar_pedido($status_atual, $status_map)
     {
-        if ($status_atual == $status_map['em_andamento']) {
-            return [$status_map['cancelado'], 'Pedido Cancelado com Sucesso.','sucesso'];
+        if ($status_atual == $status_map['Em_Andamento']) {
+            return [$status_map['Cancelado'], 'Pedido Cancelado com Sucesso.','sucesso'];
         }
-        if ($status_atual == $status_map['finalizado']) {
-            return [$status_map['reembolsado'], 'Pedido Reembolsado','sucesso'];
+        if ($status_atual == $status_map['Finalizado']) {
+            return  [null, 'Não é Possível Cancelar Pedido Finalizado','erro'];
         }
-        if ($status_atual == $status_map['cancelado']) {
-            return [$status_map['em_andamento'], 'Pedido Reativado','sucesso'];
-        }
-        if ($status_atual == $status_map['reembolsado']) {
-            return [null, 'Não é possível cancelar o reembolso','erro'];
+        if ($status_atual == $status_map['Cancelado']) {
+            return [$status_map['Em_Andamento'], 'Pedido Reativado','sucesso'];
         }
         return [null, 'Status inválido para cancelamento','erro'];
     }

@@ -9,6 +9,11 @@ $(document).ready(function() {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
     }
 
+    // Nova função para formatar sem símbolo R$
+    function formatarSemSimbolo(valor) {
+        return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     function atualizarVisibilidadeHeader() {
         const tabela = $('#tabela-pagamentos-adicionados');
         const thead = tabela.find('thead');
@@ -55,23 +60,23 @@ $(document).ready(function() {
             });
         } else {
             $("#instituicao").empty()
-                .append('<option value="">Aguardando forma de pagamento...</option>')
+                .append('<option value="">Selecione</option>')
                 .prop("disabled", true);
         }
     });
 
     function processarAdicaoPagamento() {
         const instituicaoId = $('#instituicao').val();
-        const valorAdicionarStr = $('#adicionar-valor').val();
+        const valorAdicionarStr = $('#receber-valor').val();
         
         if (!instituicaoId) {
-            alert('Por favor, selecione a forma de pagamento e a instituição.');
+            alert('Selecione a forma de pagamento e a instituição.');
             return;
         }
 
         const valorAdicionar = parseFloatBRL(valorAdicionarStr);
         if (isNaN(valorAdicionar) || valorAdicionar <= 0) {
-            alert('Por favor, insira um valor válido.');
+            alert('Insira um valor válido.');
             return;
         }
 
@@ -81,60 +86,59 @@ $(document).ready(function() {
             return;
         }
 
-    $.post(base_url + 'pedido/adicionar_pagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
-        if (response.success) {
-            const dados = response.data;
-            const novaLinha = `
-                <tr data-valor="${dados.valor_total}">
-                    <td>${dados.descricao_pagamento}</td>
-                    <td>
-                        ${dados.descricao}
-                        <input type="hidden" name="instituicao[]" value="${instituicaoId}">
-                        <input type="hidden" name="total_parcela[]" value="${dados.valor_total}">
-                    </td>
-                    <td>${dados.numero_parcelas}x</td>
-                    <td>${formatBRL(dados.valor_parcela)}</td>
-                    <td>${formatBRL(dados.valor_total)}</td>
-                    <td><button type="button" class="btn-excluir">Excluir</button></td>
-                </tr>
-            `;
-            $('#tabela-pagamentos-adicionados tbody').append(novaLinha);
-    
-            const novoValorAReceber = valorAReceber - valorAdicionar;
-            $('#a-receber').text(formatBRL(novoValorAReceber));
+        $.post(base_url + 'pedido/adicionar_pagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
+            if (response.success) {
+                const dados = response.data;
+                const novaLinha = `
+                    <tr data-valor="${dados.valor_total}">
+                        <td>${dados.descricao_pagamento}</td>
+                        <td>
+                            ${dados.descricao}
+                            <input type="hidden" name="instituicao[]" value="${instituicaoId}">
+                            <input type="hidden" name="total_parcela[]" value="${dados.valor_total}">
+                        </td>
+                        <td>${dados.numero_parcelas}x</td>
+                        <td>${formatBRL(dados.valor_parcela)}</td>
+                        <td>${formatBRL(dados.valor_total)}</td>
+                        <td><button type="button" name="remover" class="btn excluir"><img src="${base_url}assets/icons/excluir.svg" alt="Remover"></button></td>
+                    </tr>
+                `;
+                $('#tabela-pagamentos-adicionados tbody').append(novaLinha);
+        
+                const novoValorAReceber = valorAReceber - valorAdicionar;
+                $('#a-receber').text(formatarSemSimbolo(novoValorAReceber));
 
-            $('#adicionar-valor').val('');
-            $('#instituicao').val('');
-            $('#forma-pagamento').val('').trigger('change');
-    
-            atualizarVisibilidadeHeader();
+                $('#receber-valor').val('');
+                $('#instituicao').val('');
+                $('#forma-pagamento').val('').trigger('change');
+        
+                atualizarVisibilidadeHeader();
 
-        } else {
-            alert('Erro: ' + response.message);
-        }
-    }, 'json');
-
+            } else {
+                alert('Erro: ' + response.message);
+            }
+        }, 'json');
     }
 
-    $('.div .filtros .horizontal button').on('click', function() {
+    $('#adicionar-valor').on('click', function() {
         processarAdicaoPagamento();
     });
 
-    $('#adicionar-valor').on('keydown', function(event) {
+    $('#receber-valor').on('keydown', function(event) {
         if (event.which === 13) {
             event.preventDefault();
             processarAdicaoPagamento();
         }
     });
 
-    $('#pagamento-adicionado').on('click', '.btn-excluir', function() {
+    $('#pagamento-adicionado').on('click', '.excluir', function() {
         const linha = $(this).closest('tr');
         const valorLinha = parseFloat(linha.data('valor'));
         
         const valorAReceberAtual = parseFloatBRL($('#a-receber').text());
         const novoValorAReceber = valorAReceberAtual + valorLinha;
 
-        $('#a-receber').text(formatBRL(novoValorAReceber));
+        $('#a-receber').text(formatarSemSimbolo(novoValorAReceber));
         
         linha.remove();
         atualizarVisibilidadeHeader();
@@ -149,7 +153,7 @@ $(document).ready(function() {
             atualizarVisibilidadeHeader();
 
             const novoValorTotal = parseFloatBRL($('#valor-total').text());
-            $('#a-receber').text(formatBRL(novoValorTotal));
+            $('#a-receber').text(formatarSemSimbolo(novoValorTotal));
         };
 
         const observer = new MutationObserver(callback);
