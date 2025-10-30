@@ -26,7 +26,7 @@ $(document).ready(function() {
         }
     }
 
-    $.post(base_url + "pedido/get_forma_pagamento", function(data) {
+    $.post(base_url + "pedido/buscarFormaPagamento", function(data) {
         let formas = JSON.parse(data);
         $.each(formas, function(i, item) {
             $("#forma-pagamento").append(
@@ -42,7 +42,7 @@ $(document).ready(function() {
         let idForma = $(this).val();
         $("#instituicao").empty().append('<option value="">Carregando...</option>');
         if (idForma) {
-            $.post(base_url + "pedido/get_instituicao/" + idForma, function(data) {
+            $.post(base_url + "pedido/buscarInstituicao/" + idForma, function(data) {
                 let instituicoes = JSON.parse(data);
                 $("#instituicao").empty().prop("disabled", false);
                 $("#instituicao").append('<option value="">Selecione</option>');

@@ -1,7 +1,7 @@
 <?php
 class Produto_model extends CI_Model{
 
-    private function baseQuery()
+    private function consultaBase()
     {
         $this->db->select('produto.id, produto.codigo, produto.altura, produto.largura, produto.profundidade, produto.estoque, produto.preco_unitario, produto.descricao AS produto_nome, fornecedor.descricao AS fornecedor_nome, modelo.descricao AS modelo_nome, grupo.descricao AS grupo_nome');
         $this->db->join('fornecedor', 'fornecedor.id = produto.fornecedor_id');
@@ -9,9 +9,9 @@ class Produto_model extends CI_Model{
         $this->db->join('grupo', 'grupo.id = produto.grupo_id');
     }
 
-    public function listar($filtro = array())
+    public function listar(array $filtro = array()): array
     {
-        $this->baseQuery();
+        $this->consultaBase();
 
         $this->db = filtro($this->db, 'produto.codigo', $filtro['codigo'] ?? '', 'LIKE');
         $this->db = filtro($this->db, 'produto.descricao', $filtro['nome_produto'] ?? '', 'LIKE');
@@ -21,30 +21,30 @@ class Produto_model extends CI_Model{
         return $this->db->get('produto')->result_array();
     }
 
-    public function get_fornecedor()
+    public function buscarFornecedor(): array
     {
         $this->db->select('produto.fornecedor_id, fornecedor.descricao AS fornecedor_nome');
         $this->db->join('fornecedor', 'fornecedor.id = produto.fornecedor_id');
         return $this->db->get('fornecedor')->result_array();
     }
 
-    public function getByIds($ids = [])
+    public function buscarPorIds(array $ids = []): array
     {
         if (empty($ids)) {
             return [];
         }
 
-        $this->baseQuery();
+        $this->consultaBase();
         $this->db->where_in('produto.id', $ids);
         return $this->db->get('produto')->result_array();
     }
 
-    public function get_produto_pedido_item()
+    public function buscarProdutoPedidoItem(): void
     {
         $this->db->select('produto.id AS produto_id, produto.descricao AS produto_nome, produto.codigo, produto.altura, produto.largura, produto.profundidade');
     }
 
-    public function subtrair_estoque($produto_id, $quantidade)
+    public function subtrairEstoque(int $produto_id, int $quantidade): int
     {
         $this->db->set('estoque', 'estoque - ' . (int)$quantidade, FALSE);
         $this->db->where('id', $produto_id);

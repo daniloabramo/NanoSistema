@@ -1,25 +1,25 @@
 <?php
 class Instituicao_model extends CI_Model{
 
-    public function get_forma_pagamento()
+    public function buscarFormaPagamento(): array
     {
         return $this->db->get('forma_pagamento')->result_array();
     }
 
     // Instituicao correspondente a forma de pagamento selecionada
-    public function get_instituicao($forma_pagamento_id)
+    public function buscarInstituicao(int $forma_pagamento_id): array
     {
         $this->db->where('forma_pagamento_id', $forma_pagamento_id);
         return $this->db->get('instituicao')->result_array();
     }
 
-    public function get_dados_instituicao($id)
+    public function buscarDadosInstituicao(int $id): array
     {
         $this->db->where('id', $id);
         return $this->db->get('instituicao')->row_array();
     }
 
-        public function get_pagamento_instituicao($id)
+    public function buscarPagamentoInstituicao(int $id): array
     {
         $this->db->select('instituicao.id, instituicao.descricao, instituicao.numero_parcelas, forma_pagamento.descricao AS descricao_pagamento');
         $this->db->from('instituicao'); 
@@ -27,7 +27,5 @@ class Instituicao_model extends CI_Model{
         $this->db->where('instituicao.id', $id);
         return $this->db->get()->row_array();
     }
-
-
 }
 

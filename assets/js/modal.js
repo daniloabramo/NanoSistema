@@ -7,7 +7,7 @@
         var dados = {id, acao};
 
         $.ajax({
-            url: base_url + "controle/atualizar_status",
+            url: base_url + "controle/atualizarStatus",
             type: "POST",
             dataType: "json",
             data: dados,

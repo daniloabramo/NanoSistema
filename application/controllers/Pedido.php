@@ -22,7 +22,7 @@ class Pedido extends CI_Controller {
 
 
 
-    public function inserir_pedido()
+    public function inserirPedido()
     {   
         /*
         echo "<pre>";
@@ -32,7 +32,7 @@ class Pedido extends CI_Controller {
     
         $dados = $this->input->post();
         $this->load->model('Pedido_model');
-        $this->Pedido_model->inserir_pedido($dados);
+        $this->Pedido_model->inserirPedido($dados);
         redirect('controle');
     }
 
@@ -61,7 +61,7 @@ class Pedido extends CI_Controller {
 
         if (!empty($ids)) {
             $this->load->model("Produto_model");
-            $data['produto'] = $this->Produto_model->getByIds($ids);
+            $data['produto'] = $this->Produto_model->buscarPorIds($ids);
         } else {
             $data['produto'] = [];
         }
@@ -71,18 +71,18 @@ class Pedido extends CI_Controller {
 
     ///////////////////////////////////////////
 
-    public function get_forma_pagamento()
+    public function buscarFormaPagamento()
     {
         $this->load->model('Instituicao_model');
-        $forma_pagamento = $this->Instituicao_model->get_forma_pagamento();
+        $forma_pagamento = $this->Instituicao_model->buscarFormaPagamento();
         echo json_encode($forma_pagamento);
     }
 
-	public function get_instituicao($forma_pagamento_id)
+	public function buscarInstituicao($forma_pagamento_id)
     {
         $this->load->model('Instituicao_model');
         
-        $instituicao = $this->Instituicao_model->get_instituicao($forma_pagamento_id);
+        $instituicao = $this->Instituicao_model->buscarInstituicao($forma_pagamento_id);
         echo json_encode($instituicao);
     }
 
@@ -93,7 +93,7 @@ class Pedido extends CI_Controller {
 
         if ($instituicao_id && is_numeric($valor) && $valor > 0) {
             $this->load->model('Instituicao_model');
-            $dados = $this->Instituicao_model->get_pagamento_instituicao($instituicao_id);
+            $dados = $this->Instituicao_model->buscarPagamentoInstituicao($instituicao_id);
 
             if ($dados) {
                 $dados['valor_total'] = $valor;
@@ -121,7 +121,7 @@ class Pedido extends CI_Controller {
     public function Detalhes_Pedido($id_codificado){
         $id = base64_decode(urldecode($id_codificado));
         $this->load->model('Pedido_model');
-        $dados = $this->Pedido_model->get_detalhes_pedido($id);
+        $dados = $this->Pedido_model->buscarDetalhesPedido($id);
 
         $data['pedido'] = $dados['pedido_detalhes'][0];
         $data['item']  = $dados['pedido_item'];

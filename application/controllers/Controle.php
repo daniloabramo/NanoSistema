@@ -1,9 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Controle extends CI_Controller {
-
-    public function index(){
+class Controle extends CI_Controller
+{
+    public function index():void
+    {
         
         $this->load->model('Pedido_model');
         
@@ -13,12 +14,12 @@ class Controle extends CI_Controller {
         echo '</pre>';*/
 
         $data['menu'] = $this->load->view('partials/menu', NULL, TRUE);
-        $data['select_status'] = select_opcoes($this, 'pedido_status', 'descricao', 'descricao', 'Selecione');
+        $data['select_status'] = select_opcoes($this, 'pedido_status', 'descricao','descricao', 'Selecione');
         $this->load->view('pages/controle', $data);
         $this->load->view('partials/modal', $data);
     }
 
-    public function listar()
+    public function listar():void
     {
         $this->load->model("Pedido_model");
 
@@ -35,7 +36,7 @@ class Controle extends CI_Controller {
         $this->load->view('/partials/lista_pedido', $data); 
     }
 
-    public function atualizar_status()
+    public function atualizarStatus():void
     {
         $id   = sanitizar_input($this->input->post('id'));
         $acao = sanitizar_input($this->input->post('acao'));
@@ -50,7 +51,7 @@ class Controle extends CI_Controller {
         
         } else {
             $this->load->model("Pedido_model");
-            $resultado = $this->Pedido_model->update_status($id, $acao);
+            $resultado = $this->Pedido_model->atualizarStatus($id, $acao);
         
             $res = [
             'status' => $resultado['status'],

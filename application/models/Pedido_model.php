@@ -1,13 +1,13 @@
 <?php
 class Pedido_model extends CI_Model{
 
-    public function baseQuery()
+    public function consultaBase(): void
     {
         $this->db->from('pedido');
     }
 
     // Inserir Pedido ----------------------------------------
-    public function inserir_pedido($dados)
+    public function inserirPedido($dados): void
     {
         $pedido = [
             'pedido_status_id' => 1,
@@ -19,15 +19,15 @@ class Pedido_model extends CI_Model{
         $pedido_id = $this->db->insert_id();
 
         if (!empty($dados['produtos'])) {
-            $this->inserir_item_pedido($dados['produtos'], $pedido_id);
+            $this->inserirItemPedido($dados['produtos'], $pedido_id);
         }
 
         if (!empty($dados['instituicao']) && count($dados['instituicao']) === count($dados['total_parcela'])) {
-            $this->inserir_pagamento_pedido($dados, $pedido_id);
+            $this->inserirPagamentoPedido($dados, $pedido_id);
         }
     }
 
-    private function inserir_item_pedido($produtos, $pedido_id)
+    private function inserirItemPedido(array $produtos, int $pedido_id): void
     {
         $produto_ids = array_column($produtos, 'id');
 
@@ -35,10 +35,10 @@ class Pedido_model extends CI_Model{
         $this->db->where_in('id', $produto_ids);
         $produtos_do_banco = $this->db->get('produto')->result_array();
 
-        $mapa_de_precos = array_column($produtos_do_banco, 'preco_unitario', 'id');
+        $mapaPrecos = array_column($produtos_do_banco, 'preco_unitario', 'id');
 
-        $item_inserir = [];
-        $valor_total = 0.0;
+        $itemInserir = [];
+        $valorTotal = 0.0;
 
         $this->load->model('Produto_model');
 
@@ -46,47 +46,47 @@ class Pedido_model extends CI_Model{
             $produto_id = $p['id'];
             $quantidade = $p['quantidade'];
 
-            if (isset($mapa_de_precos[$produto_id])) {
+            if (isset($mapaPrecos[$produto_id])) {
                 try {
-                    $this->Produto_model->subtrair_estoque($produto_id, $quantidade);
+                    $this->Produto_model->subtrairEstoque($produto_id, $quantidade);
                 } catch (Exception $e) {
                     log_message('error', $e->getMessage());
                     throw $e;
                 }
 
-                $item_inserir[] = [
+                $itemInserir[] = [
                     'pedido_id'      => $pedido_id,
                     'produto_id'     => $produto_id,
                     'quantidade'     => $quantidade,
-                    'preco_unitario' => $mapa_de_precos[$produto_id]
+                    'preco_unitario' => $mapaPrecos[$produto_id]
                 ];
-                $valor_total += $mapa_de_precos[$produto_id] * $quantidade;
+                $valorTotal += $mapaPrecos[$produto_id] * $quantidade;
             }
         }
 
-        if (!empty($item_inserir)) {
-            $this->db->insert_batch('pedido_item', $item_inserir);
+        if (!empty($itemInserir)){
+            $this->db->insert_batch('pedido_item', $itemInserir);
         }
 
         $this->db->where('id', $pedido_id);
-        $this->db->update('pedido', ['valor_total' => $valor_total]);
+        $this->db->update('pedido', ['valor_total' => $valorTotal]);
     }
 
-    private function inserir_pagamento_pedido($dados, $pedido_id)
+    private function inserirPagamentoPedido(array $dados, int $pedido_id): void
     {
-        $pagamento_inserir = [];
+        $pagamentoInserir = [];
         foreach ($dados['instituicao'] as $key => $instituicao_id) {
-            $pagamento_inserir[] = [
+            $pagamentoInserir[] = [
                 'pedido_id'      => $pedido_id,
                 'instituicao_id' => $instituicao_id,
                 'valor'          => $dados['total_parcela'][$key]
             ];
         }
-        $this->db->insert_batch('pedido_pagamento', $pagamento_inserir);
+        $this->db->insert_batch('pedido_pagamento', $pagamentoInserir);
     }
 
     // Listar Pedidos -----------------------------------------
-    public function listar($filtro = array())
+    public function listar(array $filtro = []): array
     {   
         $data_inicio = $filtro['data_inicio'] ?? null;
         $data_fim = $filtro['data_fim'] ?? null;
@@ -125,11 +125,11 @@ class Pedido_model extends CI_Model{
     }
 
     // Listar Detalhes Pedido --------------------------------
-    public function get_detalhes_pedido($id)
+    public function buscarDetalhesPedido(int $id): array
     {   
-        $pedido_base = $this->get_pedido_base($id);
-        $pedido_item = $this->get_pedido_item($id);
-        $pagamento = $this->get_pagamento($id);
+        $pedido_base = $this->buscarPedidoBase($id);
+        $pedido_item = $this->buscarPedidoItem($id);
+        $pagamento = $this->buscarPagamento($id);
         
         return [
         'pedido_detalhes' => $pedido_base,
@@ -138,9 +138,9 @@ class Pedido_model extends CI_Model{
     ];
     }
 
-    private function get_pedido_base($id)
+    private function buscarPedidoBase(int $id): array
     {
-        $this->baseQuery(); 
+        $this->consultaBase(); 
         $this->db->where('pedido.id', $id);
     
         $this->db->select('pedido.id AS pedido_id, pedido.data_cadastro AS pedido_data_cadastro, pedido.valor_total');
@@ -153,10 +153,10 @@ class Pedido_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
-    private function get_pedido_item($id)
+    private function buscarPedidoItem(int $id): array
     {
         $this->db->reset_query();
-        $this->baseQuery(); 
+        $this->consultaBase(); 
     
         $this->db->where('pedido.id', $id);
         $this->db->select('pedido_item.quantidade, pedido_item.preco_unitario, pedido_item.id AS pedido_item_id');
@@ -168,11 +168,11 @@ class Pedido_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
-    private function get_pagamento($id)
+    private function buscarPagamento(int $id): array
     {
     
         $this->db->reset_query();
-        $this->baseQuery(); 
+        $this->consultaBase(); 
     
         $this->db->where('pedido.id', $id);
         $this->db->select('pedido_pagamento.data_cadastro AS pedido_pagamento_data_cadastro, pedido_pagamento.valor, pedido_pagamento.pedido_id, pedido_pagamento.instituicao_id');
@@ -187,9 +187,9 @@ class Pedido_model extends CI_Model{
     }
 
     // Atualizar status do pedido ----------------------------
-    public function update_status($id, $acao)
+    public function atualizarStatus(int $id, string $acao): array
     {
-        $status_map = [
+        $statusMapa = [
             'Em_Andamento' => 1,
             'Finalizado'   => 2,
             'Cancelado'    => 3,
@@ -204,19 +204,19 @@ class Pedido_model extends CI_Model{
             return ['status' => 'erro', 'msg' => 'Pedido não encontrado'];
         }
 
-        $status_atual = $pedido->pedido_status_id;
-        $novo_status = null;
+        $statusAtual = $pedido->pedido_status_id;
+        $novoStatus = null;
         $mensagem = '';
 
         if ($acao === "finalizar") {
-            list($novo_status, $mensagem, $status) = $this->finalizar_pedido($status_atual, $status_map);
+            list($novoStatus, $mensagem, $status) = $this->finalizarPedido($statusAtual, $statusMapa);
         } elseif ($acao === "cancelar") {
-            list($novo_status, $mensagem, $status) = $this->cancelar_pedido($status_atual, $status_map);
+            list($novoStatus, $mensagem, $status) = $this->cancelarPedido($statusAtual, $statusMapa);
         }
 
-        if ($novo_status !== null) {
+        if ($novoStatus !== null) {
             $this->db->where('id', $id);
-            $this->db->update('pedido', ['pedido_status_id' => $novo_status]);
+            $this->db->update('pedido', ['pedido_status_id' => $novoStatus]);
             
             if ($this->db->affected_rows() > 0 || $this->db->trans_status() !== FALSE) {
             return ['status' => 'sucesso', 'msg' => $mensagem];
@@ -228,30 +228,30 @@ class Pedido_model extends CI_Model{
         return ['status' => $status ?? 'info', 'msg' => $mensagem];
     }
 
-    private function finalizar_pedido($status_atual, $status_map)
+    private function finalizarPedido(int $statusAtual, array $statusMapa): array
     {
-        if ($status_atual == $status_map['Em_Andamento']) {
-            return [$status_map['Finalizado'], 'Pedido Finalizado com Sucesso.','sucesso'];
+        if ($statusAtual == $statusMapa['Em_Andamento']) {
+            return [$statusMapa['Finalizado'], 'Pedido Finalizado com Sucesso.','sucesso'];
         }
-        if ($status_atual == $status_map['Finalizado']) {
+        if ($statusAtual == $statusMapa['Finalizado']) {
             return [null, 'Pedido Já Finalizado', 'erro'];
         }
-        if ($status_atual == $status_map['Cancelado']) {
+        if ($statusAtual == $statusMapa['Cancelado']) {
             return [null, 'Reative o Pedido Para Dar Seguimento', 'info'];
         }
         return [null, 'Status inválido para finalização','erro'];
     }
 
-    private function cancelar_pedido($status_atual, $status_map)
+    private function cancelarPedido(int $statusAtual, array $statusMapa): array
     {
-        if ($status_atual == $status_map['Em_Andamento']) {
-            return [$status_map['Cancelado'], 'Pedido Cancelado com Sucesso.','sucesso'];
+        if ($statusAtual == $statusMapa['Em_Andamento']) {
+            return [$statusMapa['Cancelado'], 'Pedido Cancelado com Sucesso.','sucesso'];
         }
-        if ($status_atual == $status_map['Finalizado']) {
+        if ($statusAtual == $statusMapa['Finalizado']) {
             return  [null, 'Não é Possível Cancelar Pedido Finalizado','erro'];
         }
-        if ($status_atual == $status_map['Cancelado']) {
-            return [$status_map['Em_Andamento'], 'Pedido Reativado','sucesso'];
+        if ($statusAtual == $statusMapa['Cancelado']) {
+            return [$statusMapa['Em_Andamento'], 'Pedido Reativado','sucesso'];
         }
         return [null, 'Status inválido para cancelamento','erro'];
     }

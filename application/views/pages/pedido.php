@@ -18,7 +18,7 @@
             <img src="<?php echo base_url('assets/icons/arrow.svg'); ?>" alt="Seta">
             <h4><a href="#cliente" data-etapa="3">Dados Cliente</a></h4> 
         </section>
-        <form action="<?= base_url()?>Pedido/inserir_pedido" method="post">
+        <form action="<?= base_url()?>Pedido/inserirPedido" method="post">
             <div id="etapa1" class="etapa">
                 <h3>Adicionar Produto</h3>
         <div class="div" >
