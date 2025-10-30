@@ -86,7 +86,7 @@ $(document).ready(function() {
             return;
         }
 
-        $.post(base_url + 'pedido/adicionar_pagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
+        $.post(base_url + 'pedido/adicionarPagamento', { instituicao_id: instituicaoId, valor: valorAdicionar }, function(response) {
             if (response.success) {
                 const dados = response.data;
                 const novaLinha = `

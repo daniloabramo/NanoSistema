@@ -3,9 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Controle extends CI_Controller
 {
-    public function index():void
+    public function index(): void
     {
-        
         $this->load->model('Pedido_model');
         
         $Detalhes_Pedido = $this->Pedido_model->listar();
@@ -19,7 +18,7 @@ class Controle extends CI_Controller
         $this->load->view('partials/modal', $data);
     }
 
-    public function listar():void
+    public function listar(): void
     {
         $this->load->model("Pedido_model");
 
@@ -36,7 +35,7 @@ class Controle extends CI_Controller
         $this->load->view('/partials/lista_pedido', $data); 
     }
 
-    public function atualizarStatus():void
+    public function atualizarStatus(): void
     {
         $id   = sanitizar_input($this->input->post('id'));
         $acao = sanitizar_input($this->input->post('acao'));
@@ -62,5 +61,5 @@ class Controle extends CI_Controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($res));
-        }
+    }
 }

@@ -4634,7 +4634,7 @@ wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.the
 wrapMap.th = wrapMap.td;
 
 
-function getAll( context, tag ) {
+function buscarTodos( context, tag ) {
 
 	// Support: IE <=9 - 11 only
 	// Use typeof to avoid zero-argument method invocation on host objects (#15151)
@@ -4735,7 +4735,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		contains = jQuery.contains( elem.ownerDocument, elem );
 
 		// Append to fragment
-		tmp = getAll( fragment.appendChild( elem ), "script" );
+		tmp = buscarTodos( fragment.appendChild( elem ), "script" );
 
 		// Preserve script evaluation history
 		if ( contains ) {
@@ -5625,7 +5625,7 @@ function domManip( collection, args, callback, ignored ) {
 
 		// Require either new content or an interest in ignored elements to invoke the callback
 		if ( first || ignored ) {
-			scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
+			scripts = jQuery.map( buscarTodos( fragment, "script" ), disableScript );
 			hasScripts = scripts.length;
 
 			// Use the original fragment for the last item
@@ -5642,7 +5642,7 @@ function domManip( collection, args, callback, ignored ) {
 
 						// Support: Android <=4.0 only, PhantomJS 1 only
 						// push.apply(_, arraylike) throws on ancient WebKit
-						jQuery.merge( scripts, getAll( node, "script" ) );
+						jQuery.merge( scripts, buscarTodos( node, "script" ) );
 					}
 				}
 
@@ -5687,12 +5687,12 @@ function remove( elem, selector, keepData ) {
 
 	for ( ; ( node = nodes[ i ] ) != null; i++ ) {
 		if ( !keepData && node.nodeType === 1 ) {
-			jQuery.cleanData( getAll( node ) );
+			jQuery.cleanData( buscarTodos( node ) );
 		}
 
 		if ( node.parentNode ) {
 			if ( keepData && jQuery.contains( node.ownerDocument, node ) ) {
-				setGlobalEval( getAll( node, "script" ) );
+				setGlobalEval( buscarTodos( node, "script" ) );
 			}
 			node.parentNode.removeChild( node );
 		}
@@ -5715,9 +5715,9 @@ jQuery.extend( {
 		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
 				!jQuery.isXMLDoc( elem ) ) {
 
-			// We eschew Sizzle here for performance reasons: https://jsperf.com/getall-vs-sizzle/2
-			destElements = getAll( clone );
-			srcElements = getAll( elem );
+			// We eschew Sizzle here for performance reasons: https://jsperf.com/buscarTodos-vs-sizzle/2
+			destElements = buscarTodos( clone );
+			srcElements = buscarTodos( elem );
 
 			for ( i = 0, l = srcElements.length; i < l; i++ ) {
 				fixInput( srcElements[ i ], destElements[ i ] );
@@ -5727,8 +5727,8 @@ jQuery.extend( {
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {
 			if ( deepDataAndEvents ) {
-				srcElements = srcElements || getAll( elem );
-				destElements = destElements || getAll( clone );
+				srcElements = srcElements || buscarTodos( elem );
+				destElements = destElements || buscarTodos( clone );
 
 				for ( i = 0, l = srcElements.length; i < l; i++ ) {
 					cloneCopyEvent( srcElements[ i ], destElements[ i ] );
@@ -5739,9 +5739,9 @@ jQuery.extend( {
 		}
 
 		// Preserve script evaluation history
-		destElements = getAll( clone, "script" );
+		destElements = buscarTodos( clone, "script" );
 		if ( destElements.length > 0 ) {
-			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
+			setGlobalEval( destElements, !inPage && buscarTodos( elem, "script" ) );
 		}
 
 		// Return the cloned set
@@ -5846,7 +5846,7 @@ jQuery.fn.extend( {
 			if ( elem.nodeType === 1 ) {
 
 				// Prevent memory leaks
-				jQuery.cleanData( getAll( elem, false ) );
+				jQuery.cleanData( buscarTodos( elem, false ) );
 
 				// Remove any remaining nodes
 				elem.textContent = "";
@@ -5887,7 +5887,7 @@ jQuery.fn.extend( {
 
 						// Remove element nodes and prevent memory leaks
 						if ( elem.nodeType === 1 ) {
-							jQuery.cleanData( getAll( elem, false ) );
+							jQuery.cleanData( buscarTodos( elem, false ) );
 							elem.innerHTML = value;
 						}
 					}
@@ -5912,7 +5912,7 @@ jQuery.fn.extend( {
 			var parent = this.parentNode;
 
 			if ( jQuery.inArray( this, ignored ) < 0 ) {
-				jQuery.cleanData( getAll( this ) );
+				jQuery.cleanData( buscarTodos( this ) );
 				if ( parent ) {
 					parent.replaceChild( elem, this );
 				}
@@ -8771,7 +8771,7 @@ jQuery.extend( {
 				},
 
 				// Raw string
-				getAllResponseHeaders: function() {
+				buscarTodosResponseHeaders: function() {
 					return completed ? responseHeadersString : null;
 				},
 
@@ -9348,7 +9348,7 @@ jQuery.ajaxTransport( function( options ) {
 									typeof xhr.responseText !== "string" ?
 										{ binary: xhr.response } :
 										{ text: xhr.responseText },
-									xhr.getAllResponseHeaders()
+									xhr.buscarTodosResponseHeaders()
 								);
 							}
 						}

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pedido extends CI_Controller {
 	
-    public function index()
+    public function index(): void
     {
         $this->load->model('Pedido_model');
         $this->load->model('Produto_model');
@@ -17,12 +17,9 @@ class Pedido extends CI_Controller {
         $data['select_modelo'] = select_opcoes($this, 'produto', 'modelo', 'modelo', 'Selecione modelo');
         $data['select_grupo'] = select_opcoes($this, 'produto', 'grupo', 'grupo', 'Selecione grupo');
         $this->load->view('pages/pedido', $data);
-        
     }
 
-
-
-    public function inserirPedido()
+    public function inserirPedido(): void
     {   
         /*
         echo "<pre>";
@@ -36,7 +33,7 @@ class Pedido extends CI_Controller {
         redirect('controle');
     }
 
-    public function listar()
+    public function listar(): void
     {
         $this->load->model('Produto_model');
 
@@ -55,7 +52,7 @@ class Pedido extends CI_Controller {
     
     ////////////////////////////////////////
 
-    public function adicionado()
+    public function adicionado(): void
     {
         $ids = $this->input->post('ids'); 
 
@@ -71,14 +68,14 @@ class Pedido extends CI_Controller {
 
     ///////////////////////////////////////////
 
-    public function buscarFormaPagamento()
+    public function buscarFormaPagamento(): void
     {
         $this->load->model('Instituicao_model');
         $forma_pagamento = $this->Instituicao_model->buscarFormaPagamento();
         echo json_encode($forma_pagamento);
     }
 
-	public function buscarInstituicao($forma_pagamento_id)
+	public function buscarInstituicao(int $forma_pagamento_id): void
     {
         $this->load->model('Instituicao_model');
         
@@ -86,7 +83,7 @@ class Pedido extends CI_Controller {
         echo json_encode($instituicao);
     }
 
-    public function adicionar_pagamento()
+    public function adicionarPagamento(): void
     {
         $instituicao_id =  sanitizar_input($this->input->post('instituicao_id'));
         $valor =  sanitizar_input($this->input->post('valor'));
@@ -110,15 +107,16 @@ class Pedido extends CI_Controller {
         }
     }
 
-    public function get_cliente()
+    public function buscarCliente(): void
     {
         $this->load->model('Cliente_model');
-        $cliente = $this->Cliente_model->getAll();
+        $cliente = $this->Cliente_model->buscarTodos();
         echo json_encode($cliente);
     }
 
     // Detalhes Pedido
-    public function Detalhes_Pedido($id_codificado){
+    public function Detalhes_Pedido(string $id_codificado): void
+    {
         $id = base64_decode(urldecode($id_codificado));
         $this->load->model('Pedido_model');
         $dados = $this->Pedido_model->buscarDetalhesPedido($id);
@@ -126,18 +124,13 @@ class Pedido extends CI_Controller {
         $data['pedido'] = $dados['pedido_detalhes'][0];
         $data['item']  = $dados['pedido_item'];
         $data['pagamento'] = $dados['pagamento'];
- 
-        
+
         #echo '<pre>';
         #echo json_encode($dados, JSON_PRETTY_PRINT);
         #echo '</pre>';
         $this->load->view('pages/impressao', $data);
         $this->load->view('pages/contrato');
     }
-
-
-
-
 }
 
 

@@ -147,7 +147,7 @@
                 <div class="filtros">
                     <div class="filtro">
                         <label for="cliente">Cliente:</label>
-                        <select id="lista_cliente" data-url="<?php echo base_url('pedido/get_cliente'); ?>">
+                        <select id="lista_cliente" data-url="<?php echo base_url('pedido/buscarCliente'); ?>">
                             <option value="0">Selecione</option>
                         </select>
                     </div>
