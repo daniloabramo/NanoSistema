@@ -55,9 +55,5 @@
     <script src="<?= base_url('assets/js/modal.js') ?>"></script>
     <script src="<?= base_url('assets/js/listar-pedido.js') ?>"></script>
     <script src="<?= base_url('assets/js/pedido-status-atualizar.js') ?>"></script>
-
-    
-
-    
 </body>
 </html>

@@ -13,9 +13,9 @@ class Pedido extends CI_Controller {
         $data['produto'] = $this->db->get('produto')->result_array();
 
         $data['menu'] = $this->load->view('partials/menu', NULL, TRUE);
-        $data['select_fornecedor'] = select_opcoes($this, 'fornecedor', 'descricao', 'descricao', 'Selecione fornecedor');
-        $data['select_modelo'] = select_opcoes($this, 'produto', 'modelo', 'modelo', 'Selecione modelo');
-        $data['select_grupo'] = select_opcoes($this, 'produto', 'grupo', 'grupo', 'Selecione grupo');
+        $data['selecionarFornecedor'] = listarOpcoes($this, 'fornecedor', 'descricao', 'descricao', 'Selecione fornecedor');
+        $data['selecionarModelo'] = listarOpcoes($this, 'produto', 'modelo', 'modelo', 'Selecione modelo');
+        $data['selecionarGrupo'] = listarOpcoes($this, 'produto', 'grupo', 'grupo', 'Selecione grupo');
         $this->load->view('pages/pedido', $data);
     }
 
@@ -38,9 +38,9 @@ class Pedido extends CI_Controller {
         $this->load->model('Produto_model');
 
         $filtro = array(
-            'codigo' =>  sanitizar_input($this->input->get('codigo')),
-            'nome_produto' =>  sanitizar_input($this->input->get('nome_produto')),
-            'nome_fornecedor' =>  sanitizar_input($this->input->get('nome_fornecedor'))
+            'codigo' =>  sanitizarEntrada($this->input->get('codigo')),
+            'nome_produto' =>  sanitizarEntrada($this->input->get('nome_produto')),
+            'nome_fornecedor' =>  sanitizarEntrada($this->input->get('nome_fornecedor'))
         );
 
         $filtro = array_filter($filtro);
@@ -48,7 +48,6 @@ class Pedido extends CI_Controller {
 
         $this->load->view('/partials/lista_produto', $data); 
     }
-
     
     ////////////////////////////////////////
 
@@ -71,31 +70,31 @@ class Pedido extends CI_Controller {
     public function buscarFormaPagamento(): void
     {
         $this->load->model('Instituicao_model');
-        $forma_pagamento = $this->Instituicao_model->buscarFormaPagamento();
-        echo json_encode($forma_pagamento);
+        $formaPagamento = $this->Instituicao_model->buscarFormaPagamento();
+        echo json_encode($formaPagamento);
     }
 
-	public function buscarInstituicao(int $forma_pagamento_id): void
+	public function buscarInstituicao(int $formaPagamentoId): void
     {
         $this->load->model('Instituicao_model');
         
-        $instituicao = $this->Instituicao_model->buscarInstituicao($forma_pagamento_id);
+        $instituicao = $this->Instituicao_model->buscarInstituicao($formaPagamentoId);
         echo json_encode($instituicao);
     }
 
     public function adicionarPagamento(): void
     {
-        $instituicao_id =  sanitizar_input($this->input->post('instituicao_id'));
-        $valor =  sanitizar_input($this->input->post('valor'));
+        $instituicaoId =  sanitizarEntrada($this->input->post('instituicao_id'));
+        $valor =  sanitizarEntrada($this->input->post('valor'));
 
-        if ($instituicao_id && is_numeric($valor) && $valor > 0) {
+        if ($instituicaoId && is_numeric($valor) && $valor > 0) {
             $this->load->model('Instituicao_model');
-            $dados = $this->Instituicao_model->buscarPagamentoInstituicao($instituicao_id);
+            $dados = $this->Instituicao_model->buscarPagamentoInstituicao($instituicaoId);
 
             if ($dados) {
                 $dados['valor_total'] = $valor;
-                $num_parcelas = (int)$dados['numero_parcelas'];
-                $dados['valor_parcela'] = ($num_parcelas > 0) ? $valor / $num_parcelas : $valor;
+                $numParcelas = (int)$dados['numero_parcelas'];
+                $dados['valor_parcela'] = ($numParcelas > 0) ? $valor / $numParcelas : $valor;
                 
                 header('Content-Type: application/json');
                 echo json_encode(['success' => true, 'data' => $dados]);
@@ -115,9 +114,9 @@ class Pedido extends CI_Controller {
     }
 
     // Detalhes Pedido
-    public function Detalhes_Pedido(string $id_codificado): void
+    public function DetalhesPedido(string $idCodificado): void
     {
-        $id = base64_decode(urldecode($id_codificado));
+        $id = base64_decode(urldecode($idCodificado));
         $this->load->model('Pedido_model');
         $dados = $this->Pedido_model->buscarDetalhesPedido($id);
 

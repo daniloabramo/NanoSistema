@@ -54,12 +54,8 @@ class Produto_model extends CI_Model{
         if ($this->db->affected_rows() === 0) {
             throw new Exception('Estoque insuficiente para produto ID: ' . $produto_id);
         }
-    
         return $result;
-    }
-
-
-    
+    }    
 }
 
 

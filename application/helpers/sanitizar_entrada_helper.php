@@ -1,7 +1,7 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-function sanitizar_input($input) {
+function sanitizarEntrada($input) {
     $CI =& get_instance();
     $clean = strip_tags($input); 
     $clean = $CI->security->xss_clean($clean); 

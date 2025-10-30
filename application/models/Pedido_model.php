@@ -75,10 +75,10 @@ class Pedido_model extends CI_Model{
     private function inserirPagamentoPedido(array $dados, int $pedido_id): void
     {
         $pagamentoInserir = [];
-        foreach ($dados['instituicao'] as $key => $instituicao_id) {
+        foreach ($dados['instituicao'] as $key => $instituicaoId) {
             $pagamentoInserir[] = [
                 'pedido_id'      => $pedido_id,
-                'instituicao_id' => $instituicao_id,
+                'instituicao_id' => $instituicaoId,
                 'valor'          => $dados['total_parcela'][$key]
             ];
         }

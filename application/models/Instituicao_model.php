@@ -7,9 +7,9 @@ class Instituicao_model extends CI_Model{
     }
 
     // Instituicao correspondente a forma de pagamento selecionada
-    public function buscarInstituicao(int $forma_pagamento_id): array
+    public function buscarInstituicao(int $formaPagamentoId): array
     {
-        $this->db->where('forma_pagamento_id', $forma_pagamento_id);
+        $this->db->where('forma_pagamento_id', $formaPagamentoId);
         return $this->db->get('instituicao')->result_array();
     }
 

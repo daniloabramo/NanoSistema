@@ -19,7 +19,7 @@
             <td><?= !empty($ped['cpf']) ? $ped['cpf'] : $ped['ie'] ?></td>
             <td><?= $ped['nome_completo'] ?></td>
             <td id="<?= $ped['id'] ?>"> <?= $ped['status_descricao'] ?></td>
-            <td><button class="acao" name="imprimir" type="button" title="Imprimir" onclick="window.open('<?php echo base_url('Pedido/Detalhes_Pedido/' . urlencode(base64_encode($ped['id']))); ?>', '_blank')"><img src="<?php echo base_url('assets/icons/impressao.svg'); ?>" alt="Imprimir"></button></td>
+            <td><button class="acao" name="imprimir" type="button" title="Imprimir" onclick="window.open('<?php echo base_url('Pedido/DetalhesPedido/' . urlencode(base64_encode($ped['id']))); ?>', '_blank')"><img src="<?php echo base_url('assets/icons/impressao.svg'); ?>" alt="Imprimir"></button></td>
             <td><button type="button" name="cancelar" class="btn-cancelar acao" data-id="<?= $ped['id'] ?>" data-acao="cancelar">
                     <?php if(strtolower($ped['status_descricao']) === 'cancelado'): ?>
             <img src="<?= base_url('assets/icons/ativar.svg'); ?>" alt="Ativar">

@@ -34,7 +34,7 @@
                 <div class="filtro">
                     <label for="fornecedor">Fornecedor</label>
                     <select id="descricao-fornecedor" name="fornecedor" class="form-control">
-                        <?php echo $select_fornecedor; ?>
+                        <?php echo $selecionarFornecedor; ?>
                     </select>
                 </div>
                 <div class="bottom"><button type="button" class="btn" id="buscar-produto">Buscar Produtos</button></div>

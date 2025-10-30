@@ -7,13 +7,13 @@ class Controle extends CI_Controller
     {
         $this->load->model('Pedido_model');
         
-        $Detalhes_Pedido = $this->Pedido_model->listar();
+        $DetalhesPedido = $this->Pedido_model->listar();
         /*echo '<pre>';
-        echo json_encode($Detalhes_Pedido, JSON_PRETTY_PRINT);
+        echo json_encode($DetalhesPedido, JSON_PRETTY_PRINT);
         echo '</pre>';*/
 
         $data['menu'] = $this->load->view('partials/menu', NULL, TRUE);
-        $data['select_status'] = select_opcoes($this, 'pedido_status', 'descricao','descricao', 'Selecione');
+        $data['select_status'] = listarOpcoes($this, 'pedido_status', 'descricao','descricao', 'Selecione');
         $this->load->view('pages/controle', $data);
         $this->load->view('partials/modal', $data);
     }
@@ -23,11 +23,11 @@ class Controle extends CI_Controller
         $this->load->model("Pedido_model");
 
         $filtro = array(
-            'id' => sanitizar_input($this->input->get('id')),
-            'nome_completo' =>  sanitizar_input($this->input->get('nome_completo')),
-            'status' => sanitizar_input($this->input->get('status')),
-            'data_inicio' => sanitizar_input($this->input->get('data_inicio')),
-            'data_fim' => sanitizar_input($this->input->get('data_fim'))
+            'id' => sanitizarEntrada($this->input->get('id')),
+            'nome_completo' =>  sanitizarEntrada($this->input->get('nome_completo')),
+            'status' => sanitizarEntrada($this->input->get('status')),
+            'data_inicio' => sanitizarEntrada($this->input->get('data_inicio')),
+            'data_fim' => sanitizarEntrada($this->input->get('data_fim'))
         );
         
         $data['pedido'] = $this->Pedido_model->listar($filtro);
@@ -37,8 +37,8 @@ class Controle extends CI_Controller
 
     public function atualizarStatus(): void
     {
-        $id   = sanitizar_input($this->input->post('id'));
-        $acao = sanitizar_input($this->input->post('acao'));
+        $id   = sanitizarEntrada($this->input->post('id'));
+        $acao = sanitizarEntrada($this->input->post('acao'));
 
         log_message('debug', "Recebido: id={$id}, acao={$acao}");
 

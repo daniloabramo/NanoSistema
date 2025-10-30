@@ -117,6 +117,6 @@
             img{
                 image-rendering: pixelated;
             }
-
         }
     </style>
+</body>

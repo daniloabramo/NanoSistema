@@ -1,8 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-if (!function_exists('select_opcoes')) {
-    function select_opcoes($CI, $tabela, $valor_coluna, $exibir_coluna, $opcao_padrao = 'Selecione', $where = null)
+if (!function_exists('listarOpcoes')) {
+    function listarOpcoes($CI, $tabela, $valor_coluna, $exibir_coluna, $opcao_padrao = 'Selecione', $where = null)
     {
         if ($where !== null) {
             $CI->db->where($where);
